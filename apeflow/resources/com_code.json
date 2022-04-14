@@ -1,0 +1,30 @@
+{
+  "APE003": {
+    "1": "Classifier",
+    "2": "Regressor",
+    "3": "Clustering",
+    "4": "WE",
+    "5": "DR",
+    "6": "FE",
+    "7": "OD",
+    "8": "STS",
+    "9": "DNSD",
+    "10": "TA"
+  },
+  "APE004": {
+    "1": "Single",
+    "2": "TimeSeries"
+  },
+  "APE005": {
+    "1": "Basic",
+    "2": "DataAttach",
+    "3": "ModelAttach",
+    "4": "Parallel"
+  },
+  "APE007": {
+    "1": "RandomSampling",
+    "2": "OverSampling",
+    "3": "UnderSampling",
+    "4": "NoneSampling"
+  }
+}
