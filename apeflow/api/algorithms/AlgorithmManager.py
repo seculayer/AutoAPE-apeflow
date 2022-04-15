@@ -25,10 +25,11 @@ class AlgorithmManager(metaclass=Singleton):
             target_dir=cls.get_lib_path(),
             exclude_files=[
                 "__init__.py",
+                "AlgorithmAbstract.py"
                 "AlgorithmFactory.py",
                 "AlgorithmManager.py"
             ],
-            lib_path=os.getcwd()+"/"
+            lib_path=cls.get_lib_path()+"/"
         )
 
     @classmethod
