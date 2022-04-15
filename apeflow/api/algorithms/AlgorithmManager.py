@@ -17,12 +17,12 @@ class AlgorithmManager(metaclass=Singleton):
 
     @staticmethod
     def get_lib_path():
-        return os.path.realpath(FileUtils.get_realpath(file=__file__))
+        return os.path.realpath(FileUtils.get_realpath(file=__file__) + "/../../../")
 
     @classmethod
     def get_packages(cls):
         return DynamicClassLoader.get_packages(
-            target_dir=cls.get_lib_path(),
+            target_dir=cls.get_lib_path() + "/apeflow/api/algorithms",
             exclude_files=[
                 "__init__.py",
                 "AlgorithmAbstract.py"
