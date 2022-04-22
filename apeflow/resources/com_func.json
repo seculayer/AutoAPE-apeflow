@@ -1,0 +1,30 @@
+{
+  "activation_fn_code": {
+    "ReLU": "tf.nn.relu",
+    "Tanh": "tf.nn.tanh",
+    "Sigmoid": "tf.nn.sigmoid"
+  },
+  "optimizer_fn_code": {
+    "Adam": "tf.keras.optimizers.Adam",
+    "Adadelta": "tf.keras.optimizers.Adadelta",
+    "rmsprop": "tf.keras.optimizers.RMSprop"
+  },
+  "conv_fn_code": {
+    "Conv1D": "tf.keras.layers.Conv1D",
+    "Conv2D": "tf.keras.layers.Conv2D",
+    "Conv3D": "tf.keras.layers.Conv3D"
+  },
+  "pooling_fn_code": {
+    "Max1D": "tf.keras.layers.MaxPool1D",
+    "Max2D": "tf.keras.layers.MaxPool2D",
+    "Max3D": "tf.keras.layers.MaxPool3D",
+    "Average1D": "tf.keras.layers.AveragePooling1D",
+    "Average2D": "tf.keras.layers.AveragePooling2D",
+    "Average3D": "tf.keras.layers.AveragePooling3D"
+  },
+  "upsample_fn_code": {
+    "UpSampling1D": "tf.keras.layers.UpSampling1D",
+    "UpSampling2D": "tf.keras.layers.UpSampling2D",
+    "UpSampling3D": "tf.keras.layers.UpSampling3D"
+  }
+}
