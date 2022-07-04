@@ -108,7 +108,8 @@ class AlgorithmAbstract(object):
             "Clustering": self.eval_clustering,
             "WE": self.eval_we,
             "FE": self.eval_fe,
-            "OD": self.eval_od
+            "OD": self.eval_od,
+            "TA": self.eval_ta,
         }.get(self.param_dict["algorithm_type"], None)
         try:
             return case(dataset=dataset)
@@ -177,4 +178,7 @@ class AlgorithmAbstract(object):
         return self.eval_default_rst(dataset)
 
     def eval_od(self, dataset: dict):
+        return self.eval_default_rst(dataset)
+
+    def eval_ta(self, dataset: dict):
         return self.eval_default_rst(dataset)
