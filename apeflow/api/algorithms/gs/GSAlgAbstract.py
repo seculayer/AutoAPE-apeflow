@@ -23,8 +23,8 @@ class GSAlgAbstract(AlgorithmAbstract):
     DIST_TYPE = Constants.DIST_TYPE_SINGLE
     OUT_MODEL_TYPE = Constants.OUT_MODEL_JSON
 
-    def __init__(self, param_dict, ext_data=None):
-        AlgorithmAbstract.__init__(self, param_dict, ext_data)
+    def __init__(self, param_dict, wrapper=None, ext_data=None):
+        AlgorithmAbstract.__init__(self, param_dict, wrapper, ext_data)
         self.learn_result_callback = None
         try:
             self.task_idx = int(json.loads(os.environ["TF_CONFIG"])["task"]["index"])

@@ -20,8 +20,11 @@ class SKLMLP(SKLAlgAbstract):
     DIST_TYPE = Constants.DIST_TYPE_SINGLE
     OUT_MODEL_TYPE = Constants.OUT_MODEL_PKL
 
-    def __init__(self, param_dict, ext_data):
-        super(SKLMLP, self).__init__(param_dict, ext_data)
+    def __init__(self, param_dict, wrapper=None, ext_data=None):
+        if wrapper is not None:
+            super(SKLMLP, self).__init__(param_dict, wrapper, ext_data)
+        else:
+            super(SKLMLP, self).__init__(param_dict, ext_data)
 
     def _check_parameter(self, param_dict):
         _param_dict = super(SKLMLP, self)._check_parameter(param_dict)

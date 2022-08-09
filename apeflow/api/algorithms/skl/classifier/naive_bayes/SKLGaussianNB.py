@@ -19,8 +19,11 @@ class SKLGaussianNB(SKLAlgAbstract):
     DIST_TYPE = Constants.DIST_TYPE_SINGLE
     OUT_MODEL_TYPE = Constants.OUT_MODEL_PKL
 
-    def __init__(self, param_dict, ext_data):
-        super(SKLGaussianNB, self).__init__(param_dict, ext_data)
+    def __init__(self, param_dict, wrapper=None, ext_data=None):
+        if wrapper is not None:
+            super(SKLGaussianNB, self).__init__(param_dict, wrapper, ext_data)
+        else:
+            super(SKLGaussianNB, self).__init__(param_dict, ext_data)
 
     def _build(self):
         self.model = GaussianNB()

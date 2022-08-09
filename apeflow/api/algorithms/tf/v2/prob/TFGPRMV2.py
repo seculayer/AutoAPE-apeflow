@@ -22,9 +22,11 @@ class TFGPRMV2(TFV2AlgAbstract):
     OUT_MODEL_TYPE = Constants.OUT_MODEL_JSON
     ALG_TYPE = ["TA"]
 
-    def __init__(self, **kwargs):
-        super(TFGPRMV2, self).__init__(**kwargs)
-        self.model = dict()
+    def __init__(self, param_dict, wrapper=None, ext_data=None):
+        if wrapper is not None:
+            super(TFGPRMV2, self).__init__(param_dict, wrapper, ext_data)
+        else:
+            super(TFGPRMV2, self).__init__(param_dict, ext_data)
 
     def _check_parameter(self, param_dict):
         _param_dict = super()._check_parameter(param_dict)
@@ -57,6 +59,8 @@ class TFGPRMV2(TFV2AlgAbstract):
         return day
 
     def _build(self):
+        self.model = dict()
+
         # get Model PARAMS
         model_nm = "{}_{}".format(self.param_dict["model_nm"], self.param_dict["alg_sn"])
 

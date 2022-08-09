@@ -28,10 +28,15 @@ class PyTorchAlgAbstract(AlgorithmAbstract, ABC):
     optimizer: optim.Optimizer
     loss_fn: nn.modules.loss._Loss
 
-    def __init__(self, param_dict, ext_data=None):
-        AlgorithmAbstract.__init__(self, param_dict, ext_data=ext_data)
+    def __init__(self, param_dict, wrapper=None, ext_data=None):
+        super(PyTorchAlgAbstract, self).__init__(param_dict, wrapper, ext_data)
+        # VARIABLES
+        self.model = None
 
-        self._build()
+        if wrapper is None:
+            self._build()
+        else:
+            self.load_model()
 
     @abstractmethod
     def _build(self):

@@ -20,8 +20,11 @@ class SKLODBKM(SKLAlgAbstract):
     DIST_TYPE = Constants.DIST_TYPE_SINGLE
     OUT_MODEL_TYPE = Constants.OUT_MODEL_PKL
 
-    def __init__(self, param_dict, ext_data):
-        super(SKLODBKM, self).__init__(param_dict, ext_data)
+    def __init__(self, param_dict, wrapper=None, ext_data=None):
+        if wrapper is not None:
+            super(SKLODBKM, self).__init__(param_dict, wrapper, ext_data)
+        else:
+            super(SKLODBKM, self).__init__(param_dict, ext_data)
 
         input_units = self.param_dict["input_units"]
         self.r = self.get_euclidean_distance([0.] * input_units[0], [1.] * input_units[0])

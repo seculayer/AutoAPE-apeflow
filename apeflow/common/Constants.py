@@ -86,6 +86,10 @@ class Constants(object, metaclass=Singleton):
     APEFLOW = "APE"
     PYTORCH = "PyTorch"
 
+    LIB_TYPE_TF = "1"
+    LIB_TYPE_GS = "4"
+    LIB_TYPE_SKL = "5"
+
     DIST_TYPE_SINGLE = "single"
     DIST_TYPE_DISTRIBUTE = "distribute"
 

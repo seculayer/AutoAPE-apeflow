@@ -18,8 +18,11 @@ class KCNNAE(TFKerasAlgAbstract):
     DATA_TYPE = ["Single"]
     VERSION = "1.0.0"
 
-    def __init__(self, param_dict, ext_data=None):
-        super(KCNNAE, self).__init__(param_dict, ext_data)
+    def __init__(self, param_dict, wrapper=None, ext_data=None):
+        if wrapper is not None:
+            super(KCNNAE, self).__init__(param_dict, wrapper, ext_data)
+        else:
+            super(KCNNAE, self).__init__(param_dict, ext_data)
 
     def _check_parameter(self, param_dict):
         _param_dict = super(KCNNAE, self)._check_parameter(param_dict)

@@ -27,8 +27,8 @@ class TFKerasAlgAbstract(AlgorithmAbstract):
     TAG = "serve"
     OUT_MODEL_TYPE = Constants.OUT_MODEL_TF
 
-    def __init__(self, param_dict, ext_data=None):
-        AlgorithmAbstract.__init__(self, param_dict, ext_data=ext_data)
+    def __init__(self, param_dict, wrapper=None, ext_data=None):
+        AlgorithmAbstract.__init__(self, param_dict, wrapper, ext_data=ext_data)
 
         self.num_workers = param_dict["num_workers"]
 
@@ -37,13 +37,17 @@ class TFKerasAlgAbstract(AlgorithmAbstract):
 
         # VARIABLES
         self.model = None
+
         try:
             self.task_idx = int(json.loads(os.environ["TF_CONFIG"])["task"]["index"])
         except:
             self.task_idx = 0
 
-        # -- build model
-        self._build()
+        if wrapper is None:
+            # -- build model
+            self._build()
+        else:
+            self.load_model()
 
     def _build(self):
         raise NotImplementedError

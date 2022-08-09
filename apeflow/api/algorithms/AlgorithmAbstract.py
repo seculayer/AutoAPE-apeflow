@@ -17,13 +17,17 @@ class AlgorithmAbstract(object):
     VERSION = "1.0.0"
     LIB_TYPE = "None"
 
-    def __init__(self, param_dict: dict, ext_data=None):
+    def __init__(self, param_dict: dict, wrapper=None, ext_data=None):
         # 파라미터 체크
         self.LOGGER = Common.LOGGER.getLogger()
         _param_dict = dict(param_dict, **param_dict.get("params"))
         self.ext_data = dict() if ext_data is None else ext_data
-        self.param_dict = self._check_parameter(_param_dict)
-        self.learn_params = self._check_learning_parameter(_param_dict)
+        if wrapper is None:
+            self.param_dict = self._check_parameter(_param_dict)
+            self.learn_params = self._check_learning_parameter(_param_dict)
+        else:
+            self.param_dict = _param_dict
+            self.learn_params = _param_dict
         self.early_steps = 0
         self.batch_size = Constants.BATCH_SIZE
 

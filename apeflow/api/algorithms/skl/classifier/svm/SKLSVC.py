@@ -20,8 +20,11 @@ class SKLSVC(SKLAlgAbstract):
     DIST_TYPE = Constants.DIST_TYPE_SINGLE
     OUT_MODEL_TYPE = Constants.OUT_MODEL_PKL
 
-    def __init__(self, param_dict, ext_data):
-        super(SKLSVC, self).__init__(param_dict, ext_data)
+    def __init__(self, param_dict, wrapper=None, ext_data=None):
+        if wrapper is not None:
+            super(SKLSVC, self).__init__(param_dict, wrapper, ext_data)
+        else:
+            super(SKLSVC, self).__init__(param_dict, ext_data)
 
     def _check_parameter(self, param_dict):
         _param_dict = super(SKLSVC, self)._check_parameter(param_dict)
@@ -35,7 +38,7 @@ class SKLSVC(SKLAlgAbstract):
 
     def _build(self):
         kernel_fn = self.param_dict["kernel_fn"]
-        self.model = SVC(kernel=kernel_fn, verbose=0)
+        self.model = SVC(kernel=kernel_fn, verbose=0, probability=True)
 
     def learn(self, dataset):
         # linear, poly, rbf, sigmoid, precomputed

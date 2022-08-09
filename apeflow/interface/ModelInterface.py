@@ -37,7 +37,7 @@ class ModelInterface(object):
                     param_dict["dropout_prob"] = "0"
                 except:
                     pass
-            model: ModelAbstract = ModelBuilder.create(param_dict, self.ext_data)
+            model: ModelAbstract = ModelBuilder.create(param_dict, self.job_type, self.ext_data)
             val: Tuple = (model, learn_yn)
             model_list.append(val)
         return model_list

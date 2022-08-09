@@ -22,10 +22,15 @@ class SKLAlgAbstract(AlgorithmAbstract):
     DIST_TYPE = Constants.DIST_TYPE_SINGLE
     OUT_MODEL_TYPE = Constants.OUT_MODEL_PKL
 
-    def __init__(self, param_dict, ext_data):
-        super(SKLAlgAbstract, self).__init__(param_dict, ext_data)
+    def __init__(self, param_dict, wrapper=None, ext_data=None):
+        super(SKLAlgAbstract, self).__init__(param_dict, wrapper, ext_data)
+        # VARIABLES
         self.model = None
-        self._build()
+
+        if wrapper is None:
+            self._build()
+        else:
+            self.load_model()
 
     def _build(self):
         raise NotImplementedError

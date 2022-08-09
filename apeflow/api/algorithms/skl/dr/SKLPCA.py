@@ -19,8 +19,11 @@ class SKLPCA(SKLAlgAbstract):
     DIST_TYPE = Constants.DIST_TYPE_SINGLE
     OUT_MODEL_TYPE = Constants.OUT_MODEL_PKL
 
-    def __init__(self, param_dict, ext_data):
-        super(SKLPCA, self).__init__(param_dict, ext_data)
+    def __init__(self, param_dict, wrapper=None, ext_data=None):
+        if wrapper is not None:
+            super(SKLPCA, self).__init__(param_dict, wrapper, ext_data)
+        else:
+            super(SKLPCA, self).__init__(param_dict, ext_data)
 
     def _build(self):
         n_components = int(self.param_dict["output_units"])

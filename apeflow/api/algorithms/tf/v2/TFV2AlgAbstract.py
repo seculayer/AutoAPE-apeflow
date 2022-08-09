@@ -22,13 +22,11 @@ class TFV2AlgAbstract(AlgorithmAbstract, tf.keras.models.Model):
     TAG = "serve"
     OUT_MODEL_TYPE = Constants.OUT_MODEL_TF
 
-    def __init__(self, param_dict, ext_data=None):
+    def __init__(self, param_dict, wrapper=None, ext_data=None):
         tf.keras.models.Model.__init__(self)
-        super(TFV2AlgAbstract, self).__init__(param_dict, ext_data)
-        # AlgorithmAbstract.__init__(self, param_dict, ext_data=ext_data)
 
+        super(TFV2AlgAbstract, self).__init__(param_dict, wrapper, ext_data)
         self.num_workers = param_dict["num_workers"]
-
         self.input_name = "{}_{}_inputs".format(param_dict["model_nm"], param_dict["alg_sn"])
         self.output_name = "{}_{}_predicts".format(param_dict["model_nm"], param_dict["alg_sn"])
 
@@ -39,8 +37,11 @@ class TFV2AlgAbstract(AlgorithmAbstract, tf.keras.models.Model):
         except:
             self.task_idx = 0
 
-        # -- build model
-        self._build()
+        if wrapper is None:
+            # -- build model
+            self._build()
+        else:
+            self.load_model()
 
     def _build(self):
         raise NotImplementedError
