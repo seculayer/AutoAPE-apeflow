@@ -95,18 +95,20 @@ class TFUtils(object):
         return unit_list
 
     @staticmethod
-    def tf_keras_mlp_block_v2(model, units, activation, dropout_prob=1.0, name="mlp", alg_type="Classifier"):
+    def tf_keras_mlp_block_v2(model, units, activation, dropout_prob=1.0, name="mlp", alg_type="Classifier",
+                              init_weight=0.05):
         for i in range(len(units) - 2):
             layer_nm = "{}_{}".format(name, str(i + 1))
 
             # initializer = tf.keras.initializers.RandomUniform(minval=-0.1, maxval=0.1, seed=None)
             # initailizer rollback
-            initializer = tf.keras.initializers.RandomUniform(minval=-0.05, maxval=0.05, seed=None)
+            initializer = tf.keras.initializers.RandomUniform(minval=-init_weight, maxval=init_weight, seed=None)
             model.add(tf.keras.layers.Dense(
                 units[i + 1], activation=activation, name=layer_nm,
                 kernel_initializer=initializer
             ))
-            model.add(tf.keras.layers.Dropout(dropout_prob))
+            if dropout_prob != 1.0:
+                model.add(tf.keras.layers.Dropout(dropout_prob))
 
         final_act_fn = activation
         if alg_type == "Classifier":

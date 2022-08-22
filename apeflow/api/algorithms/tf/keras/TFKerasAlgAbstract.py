@@ -170,8 +170,7 @@ class TFKerasAlgAbstract(AlgorithmAbstract):
 
         return results
 
-    @staticmethod
-    def split_data(dataset, l_ratio=80) -> Tuple[dict, dict]:
+    def split_data(self, dataset, l_ratio=80) -> Tuple[dict, dict]:
         l_dataset = dict()
         v_dataset = dict()
         len_data = len(dataset['x'])
@@ -184,5 +183,6 @@ class TFKerasAlgAbstract(AlgorithmAbstract):
         except Exception as e:
             l_dataset['y'] = None
             v_dataset['y'] = None
+            self.LOGGER.error(str(e), exc_info=True)
 
         return l_dataset, v_dataset

@@ -5,10 +5,10 @@
 
 import tensorflow as tf
 
-from apeflow.common.Common import Common
-from pycmmn.exceptions.ParameterError import ParameterError
 from apeflow.api.algorithms.tf.keras.TFKerasAlgAbstract import TFKerasAlgAbstract
+from apeflow.common.Common import Common
 from apeflow.interface.utils.tf.TFUtils import TFUtils
+from pycmmn.exceptions.ParameterError import ParameterError
 
 
 class KCNN(TFKerasAlgAbstract):
@@ -37,6 +37,7 @@ class KCNN(TFKerasAlgAbstract):
             _param_dict["conv_fn"] = str(param_dict["conv_fn"])
             _param_dict["optimizer_fn"] = str(param_dict["optimizer_fn"])
             _param_dict["learning_rate"] = float(param_dict["learning_rate"])
+            _param_dict["initial_weight"] = float(param_dict.get("initial_weight", 0.05))
         except:
             raise ParameterError
         return _param_dict
@@ -57,6 +58,7 @@ class KCNN(TFKerasAlgAbstract):
         conv_fn = self.param_dict["conv_fn"]
         optimizer_fn = self.param_dict["optimizer_fn"]
         learning_rate = self.param_dict["learning_rate"]
+        initial_weight = self.param_dict.get("initial_weight")
 
         activation = eval(Common.ACTIVATE_FN_CODE_DICT[act_fn])
 
@@ -116,36 +118,43 @@ class KCNN(TFKerasAlgAbstract):
         #####################################################################################
         flatten_cls = tf.keras.layers.Flatten()
         self.model.add(flatten_cls)
-        self.model.add(
-            tf.keras.layers.Dropout(
-                dropout_prob
+        if dropout_prob != 1.0:
+            self.model.add(
+                tf.keras.layers.Dropout(
+                    dropout_prob
+                )
             )
-        )
 
         units = TFUtils.get_units(self.model.output_shape[1], hidden_units, output_units)
 
         TFUtils.tf_keras_mlp_block_v2(
             self.model, units, activation, dropout_prob=self.param_dict["dropout_prob"],
-            name="{}_{}".format(model_nm, alg_sn), alg_type=self.param_dict["algorithm_type"]
+            name="{}_{}".format(model_nm, alg_sn), alg_type=self.param_dict["algorithm_type"],
+            init_weight=initial_weight,
         )
 
         self.predicts = self.model.get_layer(index=-1)
+
+        try:
+            opt_fn = eval(Common.OPTIMIZER_FN_CODE_DICT[optimizer_fn])(learning_rate)
+        except:
+            opt_fn = Common.OPTIMIZER_FN_CODE_DICT[optimizer_fn]
 
         # MAKE TRAINING METRICS
         if self.param_dict["algorithm_type"] == "Classifier":
             self.model.compile(
                 loss='categorical_crossentropy',
-                optimizer=eval(Common.OPTIMIZER_FN_CODE_DICT[optimizer_fn])(learning_rate),
+                optimizer=opt_fn,
                 metrics=['accuracy']
             )
         elif self.param_dict["algorithm_type"] == "Regressor":
             self.model.compile(
                 loss="mse",
-                optimizer=eval(Common.OPTIMIZER_FN_CODE_DICT[optimizer_fn])(learning_rate),
+                optimizer=opt_fn,
             )
 
-        if dropout_prob != 0.:
-            self.model.summary(print_fn=self.LOGGER.info)
+        # if dropout_prob != 0.:
+        self.model.summary(print_fn=self.LOGGER.info)
 
 
 if __name__ == '__main__':
@@ -173,23 +182,34 @@ if __name__ == '__main__':
         "global_sn": "0",
         "learning_rate": "0.001",
 
-        "num_layer": "5",
-        "act_fn": "Sigmoid",
-        "filter_sizes": "2,2,2",
-        "pool_sizes": "2,2,2",
-        "num_filters": "64",
-        "pooling_fn": "Average1D",
-        "conv_fn": "Conv1D",
+        "params": {
+            "num_layer": "5",
+            "act_fn": "Sigmoid",
+            "filter_sizes": "2,2,2",
+            "pool_sizes": "2,2,2",
+            "num_filters": "64",
+            "pooling_fn": "Average1D",
+            "conv_fn": "Conv1D",
+        },
 
         "early_type": "0",
         "minsteps": "10",
         "early_key": "accuracy",
         "early_value": "0.98",
 
-        "num_workers": "1"
+        "num_workers": "1",
+        "job_key": "test",
+        "learning": "learn",
     }
 
     import numpy as np
+    import os
+    import json
+    os.environ["TF_CONFIG"] = json.dumps({
+        "task": {
+            "index": 0
+        }
+    })
 
     dataset = {
         "x": np.array([[-1., -1.], [-2., -1.], [1., 1.], [2., 1.]]),
