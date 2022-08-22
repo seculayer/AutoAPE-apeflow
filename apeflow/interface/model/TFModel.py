@@ -39,8 +39,20 @@ class TFModel(ModelAbstract):
 
         return model
 
-    @strategy_decorator
     def learn(self, dataset):
+        if self.param_dict["dist_yn"] == 'N':
+            self.learn_non_dist(dataset)
+        else:
+            self.learn_dist(dataset)
+
+    @strategy_decorator
+    def learn_dist(self, dataset):
+        # learning
+        with self.Session.as_default():
+            self.model.learn(dataset)
+            self.model.saved_model()
+
+    def learn_non_dist(self, dataset):
         # learning
         with self.Session.as_default():
             self.model.learn(dataset)
@@ -52,6 +64,10 @@ class TFModel(ModelAbstract):
         return result
 
     def predict(self, x):
+        """
+        :param x: if Keras Model, x is numpy list. else if Tensorflow V2 Model, x is dict
+        :return: predict results
+        """
         with self.Session.as_default():
             result: List = self.model.predict(x)
         return result

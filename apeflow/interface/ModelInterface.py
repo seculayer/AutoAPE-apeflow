@@ -88,7 +88,10 @@ class ModelInterface(object):
         result_list = list()
 
         for model, is_learn in self.model_list:
-            result_list.append(model.predict(self._make_dataset()['x']))
+            if model.model.ALG_CODE == "TFGPRMV2":
+                result_list.append(model.predict(self._make_dataset()))
+            else:
+                result_list.append(model.predict(self._make_dataset()['x']))
 
         return result_list
         # # self.method_type이 "Parallel"가 아닐경우, self.model_list의 길이는 1
