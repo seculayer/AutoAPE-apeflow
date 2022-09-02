@@ -52,11 +52,11 @@
         <description>None</description>
     </property>
     <property>
-        <name>ssh_username</name>
+        <name>mrms_username</name>
         <value>HE12RmzKHQtH3bL7tTRqCg==</value>
     </property>
     <property>
-        <name>ssh_password</name>
+        <name>mrms_password</name>
         <value>jTf6XrqcYX1SAhv9JUPq+w==</value>
     </property>
 </configuration>
