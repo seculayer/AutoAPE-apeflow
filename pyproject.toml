@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "apeflow"
 version = "1.0.0"
-description = "SecuLayer Inc. AutoML Project\nModule : Apeflow"
+description = "AutoML: Apeflow"
 authors = ["Jin Kim <jin.kim@seculayer.com>"]
 include = ["conf"]
 
