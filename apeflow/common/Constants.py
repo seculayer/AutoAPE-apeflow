@@ -90,6 +90,8 @@ class Constants(object, metaclass=Singleton):
     LIB_TYPE_TF = "1"
     LIB_TYPE_GS = "4"
     LIB_TYPE_SKL = "5"
+    LIB_TYPE_XGB = "6"
+    LIB_TYPE_LGBM = "7"
 
     DIST_TYPE_SINGLE = "single"
     DIST_TYPE_DISTRIBUTE = "distribute"
@@ -107,6 +109,7 @@ class Constants(object, metaclass=Singleton):
     OUT_MODEL_ONNX = "onnx"  # https://onnx.ai/
     OUT_MODEL_PYTORCH = "PyTorch"
     OUT_MODEL_XGB = "xgboost"
+    OUT_MODEL_LGBM = None
 
     BATCH_SIZE = 1024
 

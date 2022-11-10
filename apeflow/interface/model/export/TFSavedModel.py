@@ -4,6 +4,8 @@
 # Powered by Seculayer © 2021 Service Model Team, R&D Center.
 import os
 import json
+import pickle
+
 import joblib
 from typing import Callable
 import tensorflow as tf
@@ -27,6 +29,7 @@ class TFSavedModel(SavedModelAbstract):
         return {
             Constants.OUT_MODEL_TF: cls._save_model_keras if model.LIB_TYPE == Constants.KERAS else None,
             Constants.OUT_MODEL_XGB: cls._save_model_xgb,
+            Constants.OUT_MODEL_LGBM: cls._save_model_lgbm,
             Constants.OUT_MODEL_JSON: cls._save_model_json,
             Constants.OUT_MODEL_KERAS_TOKENIZER: cls._save_model_keras_tokenizer,
             Constants.OUT_MODEL_APE_OUTLIER_DETCTION: cls._save_model_ape_outlier_detection
@@ -41,6 +44,16 @@ class TFSavedModel(SavedModelAbstract):
     def _save_model_xgb(cls, model, dir_model):
         FileUtils.mkdir(dir_model)
         model.model.save_model(dir_model + "/model.h5")
+
+    @classmethod
+    def _save_model_lgbm(cls, model, dir_model):
+        FileUtils.mkdir(dir_model)
+        try:
+            f = open(dir_model + "/apeflow.model", "wb")
+            pickle.dump(model.model, f)
+            f.close()
+        except Exception as e:
+            cls.LOGGER.error(e, exc_info=True)
 
     @classmethod
     def _save_model_json(cls, model, dir_model):
@@ -98,6 +111,7 @@ class TFSavedModel(SavedModelAbstract):
         return {
             Constants.OUT_MODEL_TF: cls._load_model_keras if model.LIB_TYPE == Constants.KERAS else None,
             Constants.OUT_MODEL_XGB: cls._load_model_xgb,
+            Constants.OUT_MODEL_LGBM: cls._load_model_lgbm,
             Constants.OUT_MODEL_JSON: cls._load_model_json,
             Constants.OUT_MODEL_KERAS_TOKENIZER: cls._load_model_keras_tokenizer,
             Constants.OUT_MODEL_APE_OUTLIER_DETCTION: cls._load_model_ape_outlier_detection
@@ -120,6 +134,15 @@ class TFSavedModel(SavedModelAbstract):
         except Exception as e:
             cls.LOGGER.error(e, exc_info=True)
             raise e
+
+    @classmethod
+    def _load_model_lgbm(cls, model, dir_model):
+        try:
+            f = open(dir_model + "/apeflow.model", "rb")
+            model.model = pickle.load(f)
+            f.close()
+        except Exception as e:
+            cls.LOGGER.error(e, exc_info=True)
 
     @classmethod
     def _load_model_json(cls, model, dir_model):
