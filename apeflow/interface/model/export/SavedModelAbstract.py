@@ -16,10 +16,15 @@ from pycmmn.sftp.SFTPClientManager import SFTPClientManager
 
 class SavedModelAbstract(object):
     LOGGER = Common.LOGGER.getLogger()
-    MRMS_SFTP_MANAGER: SFTPClientManager = SFTPClientManager(
-        "{}:{}".format(Constants.MRMS_SVC, Constants.MRMS_SFTP_PORT),
-        Constants.MRMS_USER, Constants.MRMS_PASSWD, LOGGER
-    )
+    try:
+        MRMS_SFTP_MANAGER: SFTPClientManager = SFTPClientManager(
+            "{}:{}".format(Constants.MRMS_SVC, Constants.MRMS_SFTP_PORT),
+            Constants.MRMS_USER, Constants.MRMS_PASSWD, LOGGER
+        )
+    except Exception as e:
+        LOGGER.error(e, exc_info=True)
+        LOGGER.info(f"[Apeflow] svc : {Constants.MRMS_SVC}, sftp port: {Constants.MRMS_SFTP_PORT}")
+        LOGGER.info(f"[Apeflow] user name : {Constants.MRMS_USER}, passwd: {Constants.MRMS_PASSWD}")
 
     @classmethod
     def init(cls, dir_model, param_dict):
