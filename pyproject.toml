@@ -13,6 +13,7 @@ scikit-learn = "^1.0"
 torch = "^1.11.0"
 numpy = "^1.21"
 scp = "^0.14.4"
+xgboost = "^1.6"
 pycmmn = { git = "https://ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-pycmmn.git", rev = "main" }
 
 [tool.poetry.dev-dependencies]
@@ -33,7 +34,6 @@ prospector = { extras = [
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
 
 [tool.isort]
 profile = "black"

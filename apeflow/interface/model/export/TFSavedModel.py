@@ -26,6 +26,7 @@ class TFSavedModel(SavedModelAbstract):
     def _save_case_fn(cls, model) -> Callable:
         return {
             Constants.OUT_MODEL_TF: cls._save_model_keras if model.LIB_TYPE == Constants.KERAS else None,
+            Constants.OUT_MODEL_XGB: cls._save_model_xgb,
             Constants.OUT_MODEL_JSON: cls._save_model_json,
             Constants.OUT_MODEL_KERAS_TOKENIZER: cls._save_model_keras_tokenizer,
             Constants.OUT_MODEL_APE_OUTLIER_DETCTION: cls._save_model_ape_outlier_detection
@@ -35,6 +36,11 @@ class TFSavedModel(SavedModelAbstract):
     def _save_model_keras(cls, model, dir_model):
         # model.model.save_weights(dir_model + '/weights.h5', save_format='h5')
         model.model.save(dir_model)
+
+    @classmethod
+    def _save_model_xgb(cls, model, dir_model):
+        FileUtils.mkdir(dir_model)
+        model.model.save_model(dir_model + "/model.h5")
 
     @classmethod
     def _save_model_json(cls, model, dir_model):
@@ -91,6 +97,7 @@ class TFSavedModel(SavedModelAbstract):
     def _load_case_fn(cls, model) -> Callable:
         return {
             Constants.OUT_MODEL_TF: cls._load_model_keras if model.LIB_TYPE == Constants.KERAS else None,
+            Constants.OUT_MODEL_XGB: cls._load_model_xgb,
             Constants.OUT_MODEL_JSON: cls._load_model_json,
             Constants.OUT_MODEL_KERAS_TOKENIZER: cls._load_model_keras_tokenizer,
             Constants.OUT_MODEL_APE_OUTLIER_DETCTION: cls._load_model_ape_outlier_detection
@@ -101,6 +108,15 @@ class TFSavedModel(SavedModelAbstract):
         try:
             # model.model.load_weights(dir_model + '/weights.h5')
             model.model = tf.keras.models.load_model(dir_model)
+        except Exception as e:
+            cls.LOGGER.error(e, exc_info=True)
+            raise e
+
+    @classmethod
+    def _load_model_xgb(cls, model, dir_model):
+        try:
+            # model.model.load_weights(dir_model + '/weights.h5')
+            model.model.load_model(dir_model + "/model.h5")
         except Exception as e:
             cls.LOGGER.error(e, exc_info=True)
             raise e

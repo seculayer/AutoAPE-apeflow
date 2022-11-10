@@ -9,6 +9,7 @@ from apeflow.interface.model.GSModel import GSModel
 from apeflow.interface.model.PyTorchModel import PyTorchModel
 from apeflow.interface.model.SKLModel import SKLModel
 from apeflow.interface.model.TFModel import TFModel
+from apeflow.interface.model.TFSingleModel import TFSingleModel
 from apeflow.interface.model.WrapperModel import WrapperModel
 
 
@@ -27,3 +28,5 @@ class ModelBuilder(object):
             return GSModel(param_dict, ext_data)
         elif lib_type == Constants.PYTORCH:
             return PyTorchModel(param_dict, ext_data)
+        elif lib_type == Constants.GPU_SINGLE:
+            return TFSingleModel(param_dict, ext_data)

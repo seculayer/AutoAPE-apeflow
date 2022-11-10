@@ -19,8 +19,13 @@ class TFUtils(object):
 
     @staticmethod
     def validate_backend_tf(lib_type_list):
+
+        # Single GPU mode
+        if Constants.GPU_SINGLE in lib_type_list:
+            return Constants.GPU_SINGLE
+
         # 정상 상태 - tfv1
-        if Constants.TFV1 in lib_type_list and (
+        elif Constants.TFV1 in lib_type_list and (
                 Constants.KERAS not in lib_type_list and Constants.TF not in lib_type_list):
             return Constants.TF_BACKEND_V1
 

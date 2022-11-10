@@ -85,6 +85,7 @@ class Constants(object, metaclass=Singleton):
     SCIKIT_LEARN = "SKL"
     APEFLOW = "APE"
     PYTORCH = "PyTorch"
+    GPU_SINGLE = "TFSingle"
 
     LIB_TYPE_TF = "1"
     LIB_TYPE_GS = "4"
@@ -105,6 +106,7 @@ class Constants(object, metaclass=Singleton):
     OUT_MODEL_APE_OUTLIER_DETCTION = "APE_OUTLIER_DETECTION"
     OUT_MODEL_ONNX = "onnx"  # https://onnx.ai/
     OUT_MODEL_PYTORCH = "PyTorch"
+    OUT_MODEL_XGB = "xgboost"
 
     BATCH_SIZE = 1024
 
