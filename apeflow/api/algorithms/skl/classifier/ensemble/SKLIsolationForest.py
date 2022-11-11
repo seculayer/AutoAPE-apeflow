@@ -34,15 +34,15 @@ class SKLIsolationForest(SKLAlgAbstract):
         # Parameter Setting
         try:
             _param_dict["n_estimators"] = int(param_dict.get("global_step", 20))
-            _param_dict["contamination"] = int(param_dict.get("contamination", 0.1))
+            _param_dict["contamination"] = float(param_dict.get("contamination", 0.1))
         except:
             raise ParameterError
         return _param_dict
 
     def _build(self):
         self.model = IsolationForest(
-            n_estimators=20,
-            contamination=0.1,
+            n_estimators=self.param_dict.get("n_estimators"),
+            contamination=self.param_dict.get("contamination"),
          )
 
     def learn(self, dataset):
