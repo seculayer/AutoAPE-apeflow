@@ -15,6 +15,7 @@ numpy = "^1.21"
 scp = "^0.14.4"
 xgboost = "^1.6"
 pycmmn = { git = "https://ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-pycmmn.git", rev = "main" }
+lightgbm = "^3.3.3"
 
 [tool.poetry.dev-dependencies]
 black = "^22"

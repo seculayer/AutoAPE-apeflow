@@ -102,6 +102,7 @@ if __name__ == '__main__':
     y = np.concatenate((y, 1 - y), axis=1)
     _x = tf.cast(_x, tf.float32)
     data = {"x": _x, "y": y}
+    print(y)
     _model.learn(data)
 
     print(_model.predict(data.get("x")))

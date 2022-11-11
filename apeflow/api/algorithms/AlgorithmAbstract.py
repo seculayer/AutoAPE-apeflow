@@ -2,6 +2,8 @@
 # Author : Jin Kim
 # e-mail : jinkim@seculayer.co.kr
 # Powered by Seculayer © 2021 Service Model Team, R&D Center.
+import json
+import os
 
 import numpy as np
 from typing import Callable
@@ -30,6 +32,11 @@ class AlgorithmAbstract(object):
             self.learn_params = _param_dict
         self.early_steps = 0
         self.batch_size = Constants.BATCH_SIZE
+
+        try:
+            self.task_idx = int(json.loads(os.environ["TF_CONFIG"])["task"]["index"])
+        except Exception as e:
+            self.task_idx = 0
 
     @staticmethod
     def _check_parameter(param_dict):
