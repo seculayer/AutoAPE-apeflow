@@ -33,7 +33,7 @@
     <property>
         <name>mrms_svc</name>
         <!--        <value>mrms-svc</value>-->
-        <value>10.1.35.72</value>
+        <value>10.1.35.235</value>
         <!--        <value>10.1.12.234</value>-->
         <description>None</description>
     </property>
