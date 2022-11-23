@@ -24,10 +24,7 @@ class SKLIsolationForest(SKLAlgAbstract):
     OUT_MODEL_TYPE = Constants.OUT_MODEL_PKL
 
     def __init__(self, param_dict, wrapper=None, ext_data=None):
-        if wrapper is not None:
-            super(SKLIsolationForest, self).__init__(param_dict, wrapper, ext_data)
-        else:
-            super(SKLIsolationForest, self).__init__(param_dict, ext_data)
+        super(SKLIsolationForest, self).__init__(param_dict, wrapper, ext_data)
 
     def _check_parameter(self, param_dict):
         _param_dict = super(SKLIsolationForest, self)._check_parameter(param_dict)

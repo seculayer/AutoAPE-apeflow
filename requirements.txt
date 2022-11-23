@@ -6,3 +6,4 @@ numpy ~= 1.21.5
 scp == 0.14.2
 tensorflow-probability == 0.15.0
 xgboost == 1.6.2
+lightgbm == 3.3.3

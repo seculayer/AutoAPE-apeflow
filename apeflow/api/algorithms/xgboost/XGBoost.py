@@ -21,15 +21,17 @@ class XGBoost(AlgorithmAbstract):
     ALG_TYPE = ["Classifier"]
     DATA_TYPE = ["Single"]
     VERSION = "1.0.0"
-    LIB_TYPE = Constants.GPU_SINGLE
     OUT_MODEL_TYPE = Constants.OUT_MODEL_XGB
     LIB_TYPE = Constants.GPU_SINGLE
 
-    def __init__(self, param_dict, ext_data=None):
+    def __init__(self, param_dict, wrapper=None, ext_data=None):
         self.model = None
-        super(XGBoost, self).__init__(param_dict=param_dict, ext_data=ext_data)
+        super(XGBoost, self).__init__(param_dict=param_dict, wrapper=wrapper, ext_data=ext_data)
         self.gpu_idx = int(os.environ.get("CUDA_VISIBLE_DEVICES", "-1"))
+
         self._build()
+        if wrapper is not None:
+            self.load_model()
 
     def _check_parameter(self, param_dict):
         _param_dict = super(XGBoost, self)._check_parameter(param_dict)

@@ -23,10 +23,7 @@ class TFGPRMV2(TFV2AlgAbstract):
     ALG_TYPE = ["TA"]
 
     def __init__(self, param_dict, wrapper=None, ext_data=None):
-        if wrapper is not None:
-            super(TFGPRMV2, self).__init__(param_dict, wrapper, ext_data)
-        else:
-            super(TFGPRMV2, self).__init__(param_dict, ext_data)
+        super(TFGPRMV2, self).__init__(param_dict, wrapper, ext_data)
 
     def _check_parameter(self, param_dict):
         _param_dict = super()._check_parameter(param_dict)

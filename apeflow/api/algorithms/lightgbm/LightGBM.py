@@ -27,10 +27,14 @@ class LightGBM(AlgorithmAbstract):
     OUT_MODEL_TYPE = Constants.OUT_MODEL_LGBM
     LIB_TYPE = Constants.GPU_SINGLE
 
-    def __init__(self, param_dict, ext_data=None):
+    def __init__(self, param_dict, wrapper=None, ext_data=None):
         self.model: LGBMClassifier = None
-        super(LightGBM, self).__init__(param_dict, ext_data=None)
-        self._build()
+        super(LightGBM, self).__init__(param_dict, wrapper=wrapper, ext_data=ext_data)
+
+        if wrapper is None:
+            self._build()
+        else:
+            self.load_model()
 
     def _check_parameter(self, param_dict):
         _param_dict = super(LightGBM, self)._check_parameter(param_dict)
@@ -61,8 +65,8 @@ class LightGBM(AlgorithmAbstract):
         )
 
         self.model.fit(
-            dataset.get("x"), dataset.get("y"),
-            eval_set=(dataset.get("x"), dataset.get("y")),
+            dataset.get("x"), self._arg_max(dataset.get("y")),
+            eval_set=(dataset.get("x"), self._arg_max(dataset.get("y"))),
             callbacks=[result_callback.eval_callback()]
         )
 
@@ -74,6 +78,15 @@ class LightGBM(AlgorithmAbstract):
 
     def saved_model(self):
         TFSavedModel.save(self)
+
+    @staticmethod
+    def _arg_max(y: list) -> list:
+        try:
+            _y = np.argmax(y, axis=1).tolist()
+        except:
+            _y = y
+
+        return _y
 
 
 def eval_callback():
