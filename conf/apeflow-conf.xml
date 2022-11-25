@@ -33,8 +33,8 @@
     <property>
         <name>mrms_svc</name>
         <!--        <value>mrms-svc</value>-->
-        <value>10.1.35.235</value>
-        <!--        <value>10.1.12.234</value>-->
+<!--        <value>10.1.35.235</value>-->
+                <value>10.1.35.234</value>
         <description>None</description>
     </property>
     <property>
@@ -53,10 +53,12 @@
     </property>
     <property>
         <name>mrms_username</name>
-        <value>HE12RmzKHQtH3bL7tTRqCg==</value>
+<!--        <value>HE12RmzKHQtH3bL7tTRqCg==</value>-->
+        <value>ldJ3on8H409DgCiOAH5/RQ==</value>
     </property>
     <property>
         <name>mrms_password</name>
-        <value>jTf6XrqcYX1SAhv9JUPq+w==</value>
+<!--        <value>jTf6XrqcYX1SAhv9JUPq+w==</value>-->
+        <value>TjB6Tn025ONrA7SbYeB/mQ==</value>
     </property>
 </configuration>
