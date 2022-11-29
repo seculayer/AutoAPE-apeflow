@@ -15,6 +15,9 @@ from pycmmn.rest.RestManager import RestManager
 
 
 class SKLIsolationForest(SKLAlgAbstract):
+    def learn_result_regressor(self, dataset):
+        raise NotImplementedError
+
     # MODEL INFORMATION
     ALG_CODE = "SKLRandomForest"
     ALG_TYPE = ["Classifier"]
@@ -63,20 +66,19 @@ class SKLIsolationForest(SKLAlgAbstract):
         valid_dataset = {"x": list(), "y": list()}
 
         y = np.argmax(dataset.get("y"), axis=1)
-        normal_length = 0
-        for l in y:
-            if l == 0:
-                normal_length += 1
-
-        normal_length = int(normal_length * 0.8)
-
-        normal_idx = 0
+        # normal_length = 0
+        # for l in y:
+        #     if l == 0:
+        #         normal_length += 1
+        #
+        # normal_length = int(normal_length * 0.8)
+        #
+        # normal_idx = 0
         for idx, label in enumerate(y):
-            if label == 0 and normal_idx < normal_length:
-                train_dataset["x"].append(dataset.get("x")[idx])
-                train_dataset["y"].append(label)
-                normal_idx += 1
-            else:
+            train_dataset["x"].append(dataset.get("x")[idx])
+            train_dataset["y"].append(label)
+
+            if label == 1:
                 valid_dataset["x"].append(dataset.get("x")[idx])
                 valid_dataset["y"].append(label)
         return train_dataset,  valid_dataset
