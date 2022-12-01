@@ -29,6 +29,9 @@ class SKLRandomForest(SKLAlgAbstract):
         self.model.fit(dataset["x"], self._arg_max(dataset["y"]))
         self.learn_result(dataset)
 
+    def predict(self, x):
+        return self.model.predict_proba(x)
+
 
 if __name__ == '__main__':
     __dataset = {
@@ -46,6 +49,7 @@ if __name__ == '__main__':
         "output_units": "2",
         "global_step": "1000",
         "model_nm": "SKLRandomForest__1",
+        "learning": "learn",
         "alg_sn": "0",
         "job_type": "learn",
         "depth": "0",
@@ -71,3 +75,5 @@ if __name__ == '__main__':
                  "y": np.array([[0, 1], [0, 1], [1, 0], [1, 0]]), }
     print(GSSG.eval(dataset=eval_data))
 
+
+    print(GSSG.predict(eval_data.get("x")))
