@@ -6,6 +6,7 @@ from typing import Dict, List, Tuple
 
 from sklearn.ensemble import IsolationForest
 from sklearn.metrics import accuracy_score, log_loss
+from sklearn.preprocessing import StandardScaler
 import numpy as np
 
 from apeflow.common.Constants import Constants
@@ -42,7 +43,7 @@ class SKLIsolationForest(SKLAlgAbstract):
     def _build(self):
         self.model = IsolationForest(
             n_estimators=self.param_dict.get("n_estimators"),
-            contamination=self.param_dict.get("contamination"),
+            contamination=self.param_dict.get("contamination")
          )
 
     def learn(self, dataset):
@@ -55,32 +56,67 @@ class SKLIsolationForest(SKLAlgAbstract):
         )
         self.model.fit(x)
 
+        pred = self.model.predict(np.array(valid_dataset.get("x")))
+        for idx, ele in enumerate(pred):
+            tmp_val = 0 if ele == 1 else 1
+            pred[idx] = tmp_val
+
         self.learn_result_isof(
-            pred=self.model.predict(np.array(valid_dataset.get("x"))),
+            pred=pred,
             label=valid_dataset.get("y")
         )
 
     @staticmethod
-    def _make_dataset(dataset) -> Tuple:
+    def rtt_standard_scaler(x):
+        x = np.array(x)
+        rtt = np.reshape(x[:, 3], (-1, 1))
+        scaler = StandardScaler()
+        rtt = scaler.fit_transform(rtt)
+
+        not_rtt = x[:, :3]
+        x = np.concatenate((not_rtt, rtt), axis=1)
+        return x
+
+    def predict(self, x):
+        # x = self.rtt_standard_scaler(x)
+        results = list()
+        for d in self.model.decision_function(x):
+            res = d
+            if d < 0:
+                res = 1 + d
+            if res > 1.0 or res < 0.0:
+                res = 1
+            results.append([1-res, res])
+
+        return results
+
+    def _make_dataset(self, dataset) -> Tuple:
         train_dataset = {"x": list(), "y": list()}
         valid_dataset = {"x": list(), "y": list()}
 
         y = np.argmax(dataset.get("y"), axis=1)
-        # normal_length = 0
-        # for l in y:
-        #     if l == 0:
-        #         normal_length += 1
-        #
-        # normal_length = int(normal_length * 0.8)
-        #
-        # normal_idx = 0
-        for idx, label in enumerate(y):
-            train_dataset["x"].append(dataset.get("x")[idx])
-            train_dataset["y"].append(label)
+        normal_length = 0
+        for l in y:
+            if l == 0:
+                normal_length += 1
 
-            if label == 1:
-                valid_dataset["x"].append(dataset.get("x")[idx])
+        normal_length = int(normal_length * 0.8)
+
+        normal_idx = 0
+        x = dataset["x"]
+        for idx, label in enumerate(y):
+            if label == 1 or normal_idx >= normal_length:
+            #if label == 1:
+                valid_dataset["x"].append(x[idx])
                 valid_dataset["y"].append(label)
+            else:
+                train_dataset["x"].append(x[idx])
+                train_dataset["y"].append(label)
+                normal_idx += 1
+
+        # train_dataset["x"] = self.rtt_standard_scaler(train_dataset["x"])
+        # valid_dataset["x"] = self.rtt_standard_scaler(valid_dataset["x"])
+
         return train_dataset,  valid_dataset
 
     def learn_result_isof(self, pred, label):
