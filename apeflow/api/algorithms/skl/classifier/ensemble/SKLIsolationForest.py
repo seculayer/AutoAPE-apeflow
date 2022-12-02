@@ -56,9 +56,21 @@ class SKLIsolationForest(SKLAlgAbstract):
         self.model.fit(x)
 
         self.learn_result_isof(
-            pred=self.model.predict(np.array(valid_dataset.get("x"))),
+            pred=self.predict(np.array(valid_dataset.get("x"))),
             label=valid_dataset.get("y")
         )
+
+    def predict(self, x):
+        results = list()
+        score_val = self.model.decision_function(x)
+        for d in score_val:
+            res = d
+            if d < 0.0:
+                res = 1 + d
+            if res > 1.0:
+                res = 1.0
+            results.append(res)
+        return results
 
     @staticmethod
     def _make_dataset(dataset) -> Tuple:
@@ -66,28 +78,37 @@ class SKLIsolationForest(SKLAlgAbstract):
         valid_dataset = {"x": list(), "y": list()}
 
         y = np.argmax(dataset.get("y"), axis=1)
-        # normal_length = 0
-        # for l in y:
-        #     if l == 0:
-        #         normal_length += 1
-        #
-        # normal_length = int(normal_length * 0.8)
-        #
-        # normal_idx = 0
-        for idx, label in enumerate(y):
-            train_dataset["x"].append(dataset.get("x")[idx])
-            train_dataset["y"].append(label)
+        normal_length = 0
+        for l in y:
+            if l == 0:
+                normal_length += 1
 
-            if label == 1:
-                valid_dataset["x"].append(dataset.get("x")[idx])
-                valid_dataset["y"].append(label)
+        normal_length = int(normal_length * 0.8)
+
+        normal_idx = 0
+        for idx, label in enumerate(y):
+            valid_dataset["x"].append(dataset.get("x")[idx])
+            valid_dataset["y"].append(label)
+
+            if label == 0 and normal_length > normal_idx:
+                train_dataset["x"].append(dataset.get("x")[idx])
+                train_dataset["y"].append(label)
+                normal_idx += 1
+
         return train_dataset,  valid_dataset
 
     def learn_result_isof(self, pred, label):
+        pred_value = list()
+        for idx, p in enumerate(pred):
+            value = 0
+            if p >= 0.5:
+                value = 1
+            pred_value.append([value])
+
         results = dict()
         results["global_sn"] = self.param_dict["global_sn"]
-        results["accuracy"] = accuracy_score(y_pred=pred, y_true=label)
-        loss = log_loss(y_true=label, y_pred=pred)
+        results["accuracy"] = accuracy_score(y_pred=pred_value, y_true=label)
+        loss = log_loss(y_true=label, y_pred=pred_value)
         results["loss"] = loss
         results["step"] = 1
 
@@ -106,9 +127,9 @@ class SKLIsolationForest(SKLAlgAbstract):
 
 if __name__ == '__main__':
     __dataset = {
-        "x": np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]]),
+        "x": np.array([[-12, -13], [-21, -15], [4, 21], [23, 13], [-12, -13], [-23, -12], [21, 11], [21, 11], [-21, -12], [-22, -12], [1, 12], [12, 21], [-31, -23], [-22, -15], [11, 11], [23, 11]]),
         # "y" : np.array([1, 1, 0, 0]),
-        "y": np.array([[0, 1], [0, 1], [1, 0], [1, 0]]),
+        "y": np.array([[0, 1], [0, 1], [1, 0], [1, 0], [0, 1], [0, 1], [1, 0], [1, 0], [0, 1], [0, 1], [1, 0], [1, 0], [0, 1], [0, 1], [1, 0], [1, 0]]),
     }
 
     __param_dict = {
@@ -128,12 +149,13 @@ if __name__ == '__main__':
         "early_type": "0",
         "learning": "N",
         "params": {
-
+            "n_estimators": 200
         }
     }
     iso = SKLIsolationForest(param_dict=__param_dict)
     iso.learn(__dataset)
     iso.saved_model()
     iso.load_model()
-    print(iso.predict(__dataset.get("x")))
+    pred = iso.predict(__dataset.get("x"))
+    print(pred)
 
