@@ -266,7 +266,7 @@ class TFGPRMV2(TFV2AlgAbstract):
             rst_list.append(x[0])
             rst_list.append(y)
             results.append(rst_list)
-        return results
+        return {"pred": results, "proba": None}
 
 
 if __name__ == '__main__':

@@ -40,16 +40,16 @@ class GSFastText(GSAlgAbstract):
             self.word_vector = self.model.wv
             self.first = False
 
-    def predict(self, x):
-        predict_result = list()
-        for row in x:
-            row_result = list()
-            for col in row:
-                vec = self.model.wv[col].tolist()
-                row_result.append(vec)
-            predict_result.append(row_result)
-
-        return predict_result
+    # def predict(self, x):
+    #     predict_result = list()
+    #     for row in x:
+    #         row_result = list()
+    #         for col in row:
+    #             vec = self.model.wv[col].tolist()
+    #             row_result.append(vec)
+    #         predict_result.append(row_result)
+    #
+    #     return predict_result
 
 
 if __name__ == '__main__':

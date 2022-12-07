@@ -4,9 +4,10 @@
 # Powered by Seculayer © 2021 Service Model Team, R&D Center.
 import json
 import os
-
 import numpy as np
-from typing import Callable
+from typing import Callable, Dict, Union
+
+from pycmmn.rest.RestManager import RestManager
 from apeflow.common.Constants import Constants
 from apeflow.common.Common import Common
 from pycmmn.exceptions.ParameterError import ParameterError
@@ -33,6 +34,7 @@ class AlgorithmAbstract(object):
         self.early_steps = 0
         self.batch_size = Constants.BATCH_SIZE
 
+        self.model = None
         try:
             self.task_idx = int(json.loads(os.environ["TF_CONFIG"])["task"]["index"])
         except Exception as e:
@@ -103,8 +105,50 @@ class AlgorithmAbstract(object):
     def learn(self, dataset: dict):
         raise NotImplementedError
 
-    def predict(self, x):
-        raise NotImplementedError
+    def predict(self, x) -> Dict:
+        batch_size = self.batch_size
+        start = 0
+        results_pred: Union[np.ndarray, None] = None
+        results_proba: Union[np.ndarray, None] = None
+        len_x = len(x)
+        is_classifier: bool = True if self.param_dict["algorithm_type"] == "Classifier" else False
+        is_outlier_detection: bool = True if self.param_dict["algorithm_type"] == "OD" else False
+
+        while start < len_x:
+            end = start + batch_size
+            batch_x = x[start: end]
+            if start == 0:
+                results_pred = self.predict_decision(batch_x)
+                if is_classifier or is_outlier_detection:
+                    results_proba = self.predict_proba(batch_x)
+            else:
+                results_pred = np.append(results_pred, self.predict_decision(batch_x), axis=0)
+                if is_classifier or is_outlier_detection:
+                    results_proba = np.append(results_proba, self.predict_proba(batch_x), axis=0)
+            start += batch_size
+
+            if self.param_dict["learning"] == "N" and (is_classifier or is_outlier_detection):
+                progress_rate = start / len_x * 100
+                RestManager.send_inference_progress(
+                    rest_url_root=Constants.REST_URL_ROOT,
+                    logger=self.LOGGER,
+                    prograss_rate=progress_rate,
+                    job_key=self.param_dict["job_key"]
+                )
+
+        return {"pred": results_pred, "proba": results_proba}
+
+    def predict_decision(self, batch_x):
+        rst: np.ndarray = self.model.predict(batch_x)
+        if len(rst.shape) == 2 and rst.shape[1] > 1:
+            rst = np.argmax(rst, axis=1)
+        elif len(rst.shape) == 2 and rst.shape[1] == 1:
+            rst = rst.flatten()
+
+        return rst
+
+    def predict_proba(self, batch_x):
+        return self.model.predict_proba(batch_x)
 
     def load_model(self):
         raise NotImplementedError
@@ -130,24 +174,18 @@ class AlgorithmAbstract(object):
 
     def eval_classifier(self, dataset: dict):
         x = dataset["x"]
-        y = dataset["y"]
+        _y = self._arg_max(dataset["y"])
 
         num_classes = self.param_dict["output_units"]
 
-        predicts = self.predict(x)
+        pred = self.predict(x)["pred"]
 
-        if len(predicts.shape) >= 2:
-            pred = np.argmax(predicts, axis=1)
+        return self._eval_class_calculate(num_classes, _y, pred)
 
-        else:
-            pred = [round(float(val)) for val in predicts]
-
-        if len(y.shape) >= 2:
-            _y = np.argmax(y, axis=1)
-        else:
-            _y = list(map(int, y))
-
+    @staticmethod
+    def _eval_class_calculate(num_classes, _y, pred):
         results = list()
+
         for c in range(int(num_classes)):
             result = {
                 "total": str(np.sum(np.equal(_y, c), dtype="int32")),
@@ -168,7 +206,7 @@ class AlgorithmAbstract(object):
     def eval_default_rst(self, dataset):
         x = dataset["x"]
 
-        pred = self.predict(x)
+        pred = self.predict_decision(x)
         try:
             pred = pred.tolist()
         except:
@@ -193,3 +231,13 @@ class AlgorithmAbstract(object):
 
     def eval_ta(self, dataset: dict):
         return self.eval_default_rst(dataset)
+
+    @staticmethod
+    def _arg_max(y: np.ndarray) -> np.ndarray:
+        try:
+            _y = np.argmax(y, axis=1)
+        except:
+            _y = y
+
+        return _y
+

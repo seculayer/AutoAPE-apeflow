@@ -8,14 +8,13 @@ import os
 import lightgbm
 import numpy as np
 from lightgbm import LGBMClassifier
+from typing import Union
 
 from apeflow.api.algorithms.AlgorithmAbstract import AlgorithmAbstract
 from apeflow.common.Constants import Constants
 from apeflow.interface.model.export.TFSavedModel import TFSavedModel
 from apeflow.interface.utils.lgbm.LearnResultCallback import LearnResultCallback
 from pycmmn.exceptions.ParameterError import ParameterError
-
-import pickle
 
 
 class LightGBM(AlgorithmAbstract):
@@ -28,7 +27,7 @@ class LightGBM(AlgorithmAbstract):
     LIB_TYPE = Constants.GPU_SINGLE
 
     def __init__(self, param_dict, wrapper=None, ext_data=None):
-        self.model: LGBMClassifier = None
+        self.model: Union[LGBMClassifier, None] = None
         super(LightGBM, self).__init__(param_dict, wrapper=wrapper, ext_data=ext_data)
 
         if wrapper is None:
@@ -70,23 +69,11 @@ class LightGBM(AlgorithmAbstract):
             callbacks=[result_callback.eval_callback()]
         )
 
-    def predict(self, x):
-        return self.model.predict_proba(x)[:, 1]
-
     def load_model(self):
         TFSavedModel.load(self)
 
     def saved_model(self):
         TFSavedModel.save(self)
-
-    @staticmethod
-    def _arg_max(y: list) -> list:
-        try:
-            _y = np.argmax(y, axis=1).tolist()
-        except:
-            _y = y
-
-        return _y
 
 
 def eval_callback():

@@ -62,7 +62,7 @@ class SKLDBSCAN(SKLAlgAbstract):
             if dist[shortest_dist_idx] < self.model.eps:
                 y_new[i] = self.model.labels_[self.model.core_sample_indices_[shortest_dist_idx]]
 
-        return y_new
+        return {"pred": y_new, "proba": None}
 
 
 if __name__ == '__main__':

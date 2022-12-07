@@ -46,6 +46,37 @@ class SKLIsolationForest(SKLAlgAbstract):
             contamination=self.param_dict.get("contamination")
          )
 
+    def predict_decision(self, batch_x):
+        rst: np.ndarray = self.model.predict(batch_x)
+        """
+        predict()
+            return :
+                -1 = outlier
+                 1 = inbound learning data(normal)
+        """
+        rst = np.where(rst == -1, 1, 0)
+
+        return rst
+
+    def predict_proba(self, batch_x):
+        # results = list()
+        # x = self.rtt_standard_scaler(x)
+        score_val = self.model.decision_function(batch_x)
+        # for d in score_val:
+        #     res = d
+        #     if d < 0.0:
+        #         res = 1 + d
+        #     if res > 1.0:
+        #         res = 1.0
+        #     results.append(res)
+        score_val = np.where(score_val < -1, -1, score_val)
+        score_val = np.where(score_val > 1, 1, score_val)
+        score_val = np.subtract(score_val, 1)
+        score_val = np.divide(score_val, 2)
+        score_val = np.abs(score_val)
+
+        return score_val
+
     def learn(self, dataset):
         train_dataset, valid_dataset = self._make_dataset(dataset)
 
@@ -57,21 +88,27 @@ class SKLIsolationForest(SKLAlgAbstract):
         self.model.fit(x)
 
         self.learn_result_isof(
-            pred=self.predict(np.array(valid_dataset.get("x"))),
+            pred=self.predict(np.array(valid_dataset.get("x")))["pred"],
             label=valid_dataset.get("y")
         )
 
-    def predict(self, x):
-        results = list()
-        score_val = self.model.decision_function(x)
-        for d in score_val:
-            res = d
-            if d < 0.0:
-                res = 1 + d
-            if res > 1.0:
-                res = 1.0
-            results.append(res)
-        return results
+    def eval_classifier(self, dataset: dict):
+        x = dataset["x"]
+        _y = self._arg_max(dataset["y"])
+
+        num_classes = self.param_dict["output_units"]
+
+        pred = self.predict_decision(x)
+        # pred = self.predict_proba(x)
+        #
+        # bin_pred = list()
+        # for p in pred:
+        #     v = 1
+        #     if p < 0.5:
+        #         v = 0
+        #     bin_pred.append(v)
+
+        return self._eval_class_calculate(num_classes, _y, pred)
 
     @staticmethod
     def rtt_standard_scaler(x):
@@ -94,20 +131,25 @@ class SKLIsolationForest(SKLAlgAbstract):
             if l == 0:
                 normal_length += 1
 
-        normal_length = int(normal_length * 0.8)
+        normal_length = int(normal_length * 0.95)
 
         normal_idx = 0
         x = dataset["x"]
         for idx, label in enumerate(y):
-            if label == 1 or normal_idx >= normal_length:
-            #if label == 1:
-                valid_dataset["x"].append(x[idx])
-                valid_dataset["y"].append(label)
-            else:
+            # if label == 1 or normal_idx >= normal_length:
+            # #if label == 1:
+            #     valid_dataset["x"].append(x[idx])
+            #     valid_dataset["y"].append(label)
+            # else:
+            #     train_dataset["x"].append(x[idx])
+            #     train_dataset["y"].append(label)
+            #     normal_idx += 1
+            valid_dataset["x"].append(x[idx])
+            valid_dataset["y"].append(label)
+            if label == 0 and normal_idx < normal_length:
                 train_dataset["x"].append(x[idx])
                 train_dataset["y"].append(label)
                 normal_idx += 1
-
         # train_dataset["x"] = self.rtt_standard_scaler(train_dataset["x"])
         # valid_dataset["x"] = self.rtt_standard_scaler(valid_dataset["x"])
 

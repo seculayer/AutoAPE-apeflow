@@ -86,9 +86,6 @@ class XGBoost(AlgorithmAbstract):
         )
         # print(self.model.evals_result())
 
-    def predict(self, x):
-        return self.model.predict_proba(x)[:, 1]
-
     def load_model(self):
         TFSavedModel.load(self)
 

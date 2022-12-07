@@ -29,9 +29,6 @@ class SKLRandomForest(SKLAlgAbstract):
         self.model.fit(dataset["x"], self._arg_max(dataset["y"]))
         self.learn_result(dataset)
 
-    def predict(self, x):
-        return self.model.predict_proba(x)
-
 
 if __name__ == '__main__':
     __dataset = {

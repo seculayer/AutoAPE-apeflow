@@ -4,7 +4,7 @@
 # Powered by Seculayer © 2021 Service Model Team, Intelligence R&D Center.
 
 import tensorflow as tf
-from typing import List, Union
+from typing import List, Union, Dict
 
 from apeflow.api.algorithms.AlgorithmFactory import AlgorithmFactory
 from apeflow.common.Common import Common
@@ -77,7 +77,7 @@ class MLModels(object):
 
             # NEXT
             if temp["next"] is not None:
-                prev_data = models.predict()[0]
+                prev_data = models.predict()[0]["pred"]
             temp = temp["next"]
 
     # EVALUATION
@@ -107,21 +107,29 @@ class MLModels(object):
 
             # NEXT
             if temp["next"] is not None:
-                prev_data = models.predict()[0]
+                prev_data = models.predict()[0]["pred"]
 
             temp = temp["next"]
 
     def predict(self, data) -> list:
         temp = self.param_dict_linked_list
         prev_data = None
-        result_list = None
+        result_dict_list: Union[None, List[Dict]] = None
 
         while temp is not None:
             models: ModelInterface = temp["interface"]
             # SET DATASET
             models.set_dataset(input_data=data, prev_data=prev_data)
             try:
-                result_list = models.predict()
+                """
+                result_dict_list = [
+                    {
+                        "pred" : List,
+                        "proba" : List
+                    },
+                ]
+                """
+                result_dict_list = models.predict()
 
             except tf.errors.ResourceExhaustedError as e:
                 self.AI_LOGGER.error(e, exc_info=True)
@@ -133,11 +141,11 @@ class MLModels(object):
 
             # NEXT
             if temp["next"] is not None:
-                prev_data = result_list[0]
+                prev_data = result_dict_list[0]["pred"]
 
             temp = temp["next"]
 
-        return result_list
+        return result_dict_list
 
     @staticmethod
     def _get_lib_types(param_dict_list):

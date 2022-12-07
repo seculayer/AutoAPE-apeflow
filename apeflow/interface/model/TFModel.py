@@ -5,7 +5,7 @@
 import os
 import json
 import tensorflow as tf
-from typing import List
+from typing import Dict
 from functools import wraps
 
 from apeflow.api.algorithms.tf.keras.TFKerasAlgAbstract import TFKerasAlgAbstract
@@ -69,7 +69,7 @@ class TFModel(ModelAbstract):
         :return: predict results
         """
         with self.Session.as_default():
-            result: List = self.model.predict(x)
+            result: Dict = self.model.predict(x)
         return result
 
 

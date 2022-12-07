@@ -36,7 +36,7 @@ class SKLPCA(SKLAlgAbstract):
     def predict(self, x):
         predict_result = self.model.transform(x)
 
-        return predict_result
+        return {"pred": predict_result, "proba": None}
 
 
 if __name__ == '__main__':

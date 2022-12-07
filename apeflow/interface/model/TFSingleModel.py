@@ -4,7 +4,7 @@
 # Powered by Seculayer © 2021 Service Model Team, R&D Center.
 import json
 import os
-from typing import List
+from typing import Dict
 
 import tensorflow as tf
 
@@ -40,7 +40,7 @@ class TFSingleModel(ModelAbstract):
         :param x: if Keras Model, x is numpy list. else if Tensorflow V2 Model, x is dict
         :return: predict results
         """
-        result: List = self.model.predict(x)
+        result: Dict = self.model.predict(x)
         return result
 
 

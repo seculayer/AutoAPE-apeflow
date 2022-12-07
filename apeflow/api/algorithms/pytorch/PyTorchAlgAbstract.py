@@ -4,7 +4,7 @@
 # Powered by Seculayer © 2021 Service Model Team, R&D Center.
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 import numpy as np
 import torch
@@ -67,8 +67,8 @@ class PyTorchAlgAbstract(AlgorithmAbstract, ABC):
 
             print(f"Epoch: {t}, loss: {epoch_loss.item()}")
 
-    def predict(self, data: np.array) -> np.array:
-        results: List[np.array] = []
+    def predict(self, data: np.ndarray) -> Dict:
+        results: Union[np.ndarray, List[np.ndarray]] = []
         batch_size = self.batch_size
 
         dataset = torch_util.createNumpyDataset(data)
@@ -80,7 +80,8 @@ class PyTorchAlgAbstract(AlgorithmAbstract, ABC):
                 x = x.to(torch_util.device)
                 results.append(self.model(x).detach().cpu().numpy())
 
-        return np.concatenate(results)
+        results = np.concatenate(results)
+        return {"pred": results.argmax(axis=1), "proba": results}
 
     def saved_model(self) -> None:
         PyTorchSavedModel.save(model=self)

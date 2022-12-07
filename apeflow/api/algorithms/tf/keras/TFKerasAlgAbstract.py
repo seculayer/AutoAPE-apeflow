@@ -7,7 +7,7 @@ import json
 import os
 import numpy as np
 import tensorflow as tf
-from typing import Tuple
+from typing import Tuple, Union
 
 from apeflow.common.Constants import Constants
 from apeflow.interface.model.export.TFSavedModel import TFSavedModel
@@ -137,32 +137,28 @@ class TFKerasAlgAbstract(AlgorithmAbstract):
             verbose=0,
         )
 
+    def predict_decision(self, batch_x):
+        batch_x = tf.keras.backend.cast(batch_x, tf.float32)
+        return self.model(batch_x).numpy()
+
     def predict(self, x):
         batch_size = self.batch_size
         start = 0
-        results = None
+        results_pred: Union[np.ndarray, None] = None
+        results_proba: Union[np.ndarray, None] = None
         len_x = len(x)
+        is_classifier: bool = True if self.param_dict["algorithm_type"] == "Classifier" else False
 
         while start < len_x:
             end = start + batch_size
-            if start == 0 and batch_size < len_x:
-                batch_x = tf.keras.backend.cast(x[start: end], tf.float32)
-                results = self.model(batch_x).numpy()
-
-            elif start == 0 and batch_size >= len_x:
-                batch_x = tf.keras.backend.cast(x, tf.float32)
-                results = self.model(batch_x).numpy()
-
-            elif end >= len_x:
-                batch_x = tf.keras.backend.cast(x[start:], tf.float32)
-                results = np.concatenate((results, self.model(batch_x).numpy()), axis=0)
-
+            batch_x = x[start: end]
+            if start == 0:
+                results_pred = self.predict_decision(batch_x)
             else:
-                batch_x = tf.keras.backend.cast(x[start:end], tf.float32)
-                results = np.concatenate((results, self.model(batch_x).numpy()), axis=0)
+                results_pred = np.append(results_pred, self.predict_decision(batch_x), axis=0)
             start += batch_size
 
-            if self.param_dict["learning"] == "N":
+            if self.param_dict["learning"] == "N" and is_classifier:
                 temp = len_x if start > len_x else start
                 progress_rate = temp / len_x * 100
                 RestManager.send_inference_progress(
@@ -172,7 +168,11 @@ class TFKerasAlgAbstract(AlgorithmAbstract):
                     job_key=self.param_dict["job_key"]
                 )
 
-        return results
+        if is_classifier:
+            results_proba = results_pred
+            results_pred = results_pred.argmax(axis=1)
+
+        return {"pred": results_pred, "proba": results_proba}
 
     def split_data(self, dataset, l_ratio=80) -> Tuple[dict, dict]:
         l_dataset = dict()

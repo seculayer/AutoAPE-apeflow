@@ -3,7 +3,7 @@
 # e-mail : jinkim@seculayer.co.kr
 # Powered by Seculayer © 2021 Service Model Team, R&D Center.
 
-from typing import Union, List, Tuple, Callable
+from typing import Union, List, Tuple, Callable, Dict
 import numpy as np
 import os
 import json
@@ -65,26 +65,26 @@ class ModelInterface(object):
                 model.learn(self._make_dataset())
 
     def eval(self) -> None:
-        result_list: List[Tuple[int, Union[list, dict]]] = list()
+        result_list: List[Union[list, dict]] = list()
 
         for idx, (model, is_learn) in enumerate(self.model_list):
             if is_learn:
-                tp = (idx, model.eval(self._make_dataset()))
-                result_list.append(tp)
+                rst = model.eval(self._make_dataset())
+                result_list.append(rst)
 
-        for idx, result in result_list:
+        if len(result_list) > 0:
             RestManager.update_eval_result(
                 rest_url_root=Constants.REST_URL_ROOT,
                 logger=self.LOGGER,
-                job_key=self.param_dict_list[idx]["job_key"],
+                job_key=self.param_dict_list[-1]["job_key"],
                 task_idx=json.loads(os.environ["TF_CONFIG"])["task"]["index"],
-                rst=result
+                rst=result_list[-1]
             )
 
         for idx, rst in result_list:
             self.LOGGER.info("result {} : {}".format(idx, rst))
 
-    def predict(self) -> Union[List, None]:
+    def predict(self) -> List[Dict]:
         result_list = list()
 
         for model, is_learn in self.model_list:

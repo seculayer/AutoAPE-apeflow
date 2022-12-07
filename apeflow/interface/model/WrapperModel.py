@@ -4,7 +4,7 @@
 # Powered by Seculayer © 2021 Service Model Team, R&D Center.
 
 import tensorflow as tf
-from typing import List
+from typing import Dict
 
 from apeflow.interface.model.ModelAbstract import ModelAbstract
 from apeflow.api.algorithms.AlgorithmFactory import AlgorithmFactory
@@ -24,8 +24,8 @@ class WrapperModel(ModelAbstract):
         :return: predict results
         """
         if self.Session is None:
-            result: List = self.model.predict(x)
+            result: Dict = self.model.predict(x)
         else:
             with self.Session.as_default():
-                result: List = self.model.predict(x)
+                result: Dict = self.model.predict(x)
         return result

@@ -6,6 +6,8 @@
 import os
 import json
 
+import numpy as np
+
 from apeflow.common.Constants import Constants
 from apeflow.api.algorithms.AlgorithmAbstract import AlgorithmAbstract
 from pycmmn.exceptions.ParameterError import ParameterError
@@ -65,11 +67,11 @@ class GSAlgAbstract(AlgorithmAbstract):
             global_sn=self.param_dict["global_sn"]
         )
 
-    def predict(self, x):
+    def predict_decision(self, batch_x) -> np.ndarray:
         output_units = self.param_dict["output_units"]
 
         predict_result = list()
-        for row in x:
+        for row in batch_x:
             row_result = list()
             for col in row:
                 try:
@@ -79,7 +81,7 @@ class GSAlgAbstract(AlgorithmAbstract):
                 row_result.append(vec)
             predict_result.append(row_result)
 
-        return predict_result
+        return np.array(predict_result)
 
     def eval_we(self, dataset):
         if self.task_idx == 0:

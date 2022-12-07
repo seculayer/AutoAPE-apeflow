@@ -30,6 +30,17 @@ class SKLLinearSVC(SKLAlgAbstract):
         self.model.fit(dataset["x"], self._arg_max(dataset["y"]))
         self.learn_result(dataset)
 
+    def predict_proba(self, batch_x):
+        score_val = self.model.decision_function(batch_x)
+
+        score_val = np.where(score_val < -1, -1, score_val)
+        score_val = np.where(score_val > 1, 1, score_val)
+        score_val = np.subtract(score_val, 1)
+        score_val = np.divide(score_val, 2)
+        score_val = np.abs(score_val)
+
+        return score_val
+
 
 if __name__ == '__main__':
     __dataset = {
