@@ -20,8 +20,6 @@ class TFSavedModel(SavedModelAbstract):
 
     @classmethod
     def save(cls, model):
-        if model.task_idx != 0:
-            return
         super(TFSavedModel, cls).save(model)
 
     @classmethod

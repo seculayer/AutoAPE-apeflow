@@ -98,8 +98,8 @@ class TFKerasAlgAbstract(AlgorithmAbstract):
         return dataset, parallel_step
 
     def saved_model(self):
-        if self.task_idx == 0:
-            TFSavedModel.save(self)
+        # if self.task_idx == 0:
+        TFSavedModel.save(self)
 
     def load_model(self):
         TFSavedModel.load(self)

@@ -56,7 +56,7 @@ class KCNNAE(TFKerasAlgAbstract):
 
         # Generate to Keras Model
         self.model = tf.keras.Sequential()
-        self.inputs = tf.keras.Input(shape=input_units[0], name="{}_{}_X".format(model_nm, alg_sn))
+        self.inputs = tf.keras.Input(shape=input_units[0], name="{}_{}_x".format(model_nm, alg_sn))
         self.model.add(self.inputs)
 
         conv_stride, pooling_stride, model_reshaped = self.model_setting(conv_fn, input_units[0], model_nm, alg_sn)

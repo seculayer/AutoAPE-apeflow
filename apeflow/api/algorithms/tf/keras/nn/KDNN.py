@@ -61,7 +61,7 @@ class KDNN(TFKerasAlgAbstract):
         self.model = tf.keras.Sequential()
 
         # MAKE INPUT LAYER
-        self.inputs = tf.keras.Input(shape=input_units, name=model_nm + '_X')
+        self.inputs = tf.keras.Input(shape=input_units, name=model_nm + '_x')
         self.model.add(self.inputs)
 
         if len(input_units) > 1:

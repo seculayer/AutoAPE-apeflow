@@ -64,7 +64,7 @@ class KCNN(TFKerasAlgAbstract):
 
         # Generate to Keras Model
         self.model = tf.keras.Sequential()
-        self.inputs = tf.keras.Input(shape=input_units, name="{}_{}_X".format(model_nm, alg_sn))
+        self.inputs = tf.keras.Input(shape=input_units, name="{}_{}_x".format(model_nm, alg_sn))
         self.model.add(self.inputs)
 
         if "1D" in conv_fn:

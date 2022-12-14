@@ -59,7 +59,8 @@ class SavedModelAbstract(object):
                 cls.LOGGER.error(e, exc_info=True)
                 raise NotSupportTypeError(algorithm_type=model.OUT_MODEL_TYPE)
 
-            cls._scp_model_to_storage(dir_model, param_dict)
+            if model.task_idx == 0:
+                cls._scp_model_to_storage(dir_model, param_dict)
             cls._remove_backup(dir_model + "_prev")
             cls._remove_backup(dir_model)
 
