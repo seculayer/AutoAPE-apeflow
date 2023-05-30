@@ -72,9 +72,9 @@ class SavedModelAbstract(object):
             try:
                 FileUtils.remove_dir(dir_model)
                 FileUtils.move_dir(dir_model + "_prev", dir_model)
-            except Exception as e:
-                cls.LOGGER.error(str(e), exc_info=True)
-                raise e
+            except Exception as err:
+                cls.LOGGER.error(str(err), exc_info=True)
+            raise e
 
     @classmethod
     def _save_except_execute(cls, dir_model, model):
