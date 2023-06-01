@@ -81,7 +81,7 @@ class ModelInterface(object):
                 rst=result_list[-1]
             )
 
-        for idx, rst in result_list:
+        for idx, rst in enumerate(result_list[-1]):
             self.LOGGER.info("result {} : {}".format(idx, rst))
 
     def predict(self) -> List[Dict]:
