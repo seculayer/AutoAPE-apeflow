@@ -111,7 +111,7 @@ class Constants(object, metaclass=Singleton):
     OUT_MODEL_XGB = "xgboost"
     OUT_MODEL_LGBM = None
 
-    BATCH_SIZE = 1024
+    BATCH_SIZE = int(_CONFIG.get("batch_size", "1024"))
 
 
 if __name__ == "__main__":
