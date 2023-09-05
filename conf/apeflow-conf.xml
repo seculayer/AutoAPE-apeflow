@@ -58,7 +58,12 @@
     </property>
     <property>
         <name>mrms_password</name>
-<!--        <value>jTf6XrqcYX1SAhv9JUPq+w==</value>-->
-        <value>TjB6Tn025ONrA7SbYeB/mQ==</value>
+        <value>jTf6XrqcYX1SAhv9JUPq+w==</value>
+<!--        <value>TjB6Tn025ONrA7SbYeB/mQ==</value>-->
+    </property>
+    <property>
+        <name>batch_size</name>
+        <value>1</value>
+        <!--        <value>TjB6Tn025ONrA7SbYeB/mQ==</value>-->
     </property>
 </configuration>
