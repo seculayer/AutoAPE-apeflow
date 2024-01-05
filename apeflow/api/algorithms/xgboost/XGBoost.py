@@ -48,13 +48,16 @@ class XGBoost(AlgorithmAbstract):
         learning_rate = self.param_dict.get("learning_rate")
         n_estimators = self.param_dict.get("n_estimators")
         max_depth = self.param_dict.get("max_depth")
+        output_units = self.param_dict.get("output_units")
 
         self.model = XGBClassifier(
             learning_rate=learning_rate,
             n_estimators=n_estimators,
             max_depth=max_depth,
             verbosity=0,
-            objective="binary:logistic"
+            objective="multi:softproba",
+            # objective="binary:logistic",
+            num_class=output_units
         )
         if self.gpu_idx != -1:
             self.model.set_params(
@@ -76,15 +79,21 @@ class XGBoost(AlgorithmAbstract):
         )
 
         self.model.set_params(
-            eval_metric="logloss",
+            eval_metric="mlogloss",
+            # eval_metric="logloss",
             callbacks=[result_callback],
         )
+
         self.model.fit(
             dataset.get("x"), dataset.get("y").argmax(axis=1),
             eval_set=[(dataset.get("x"), dataset.get("y").argmax(axis=1))],
             verbose=False,
         )
         # print(self.model.evals_result())
+
+    def predict_proba(self, batch_x):
+        self.model.object = "multi:softproba"
+        return super(XGBoost, self).predict_proba(batch_x)
 
     def load_model(self):
         TFSavedModel.load(self)
