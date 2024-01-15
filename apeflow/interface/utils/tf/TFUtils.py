@@ -72,7 +72,7 @@ class TFUtils(object):
                 #     gpu_weight = 0.7
                 # else:
                 #     gpu_weight = 0.35
-                gpu_weight = 1
+                gpu_weight = Constants.GPU_MEMORY_USAGE_WEIGHT
 
                 # 메모리 제한
                 os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "false"
