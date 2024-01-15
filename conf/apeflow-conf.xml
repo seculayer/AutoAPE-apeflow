@@ -64,11 +64,9 @@
     <property>
         <name>batch_size</name>
         <value>16</value>
-        <!--        <value>TjB6Tn025ONrA7SbYeB/mQ==</value>-->
     </property>
     <property>
         <name>gpu_memory_usage_weight</name>
         <value>0.7</value>
-        <!--        <value>TjB6Tn025ONrA7SbYeB/mQ==</value>-->
     </property>
 </configuration>
