@@ -49,7 +49,7 @@ class TFUtils(object):
 
         Common.LOGGER.getLogger().info("TF_CONFIG : {}".format(os.environ["TF_CONFIG"]))
 
-        if os.environ.get("CUDA_VISIBLE_DEVICES", None) is "-1":
+        if os.environ.get("CUDA_VISIBLE_DEVICES", None) == "-1":
             Common.LOGGER.getLogger().info("Running CPU MODE")
 
         else:
@@ -68,10 +68,11 @@ class TFUtils(object):
                     os.environ.get("NVIDIA_COM_GPU_MEM_IDX", "no variable!")
                 ))
 
-                if "KDAEOD" in alg_code_list:
-                    gpu_weight = 0.7
-                else:
-                    gpu_weight = 0.35
+                # if "KDAEOD" in alg_code_list:
+                #     gpu_weight = 0.7
+                # else:
+                #     gpu_weight = 0.35
+                gpu_weight = 1
 
                 # 메모리 제한
                 os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "false"

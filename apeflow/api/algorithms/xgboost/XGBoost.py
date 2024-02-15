@@ -80,8 +80,8 @@ class XGBoost(AlgorithmAbstract):
             callbacks=[result_callback],
         )
         self.model.fit(
-            dataset.get("x"), dataset.get("y"),
-            eval_set=[(dataset.get("x"), dataset.get("y"))],
+            dataset.get("x"), dataset.get("y").argmax(axis=1),
+            eval_set=[(dataset.get("x"), dataset.get("y").argmax(axis=1))],
             verbose=False,
         )
         # print(self.model.evals_result())

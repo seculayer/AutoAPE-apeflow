@@ -5,6 +5,7 @@
 
 import tensorflow as tf
 from typing import List, Union, Dict
+import numpy as np
 
 from apeflow.api.algorithms.AlgorithmFactory import AlgorithmFactory
 from apeflow.common.Common import Common
@@ -130,6 +131,10 @@ class MLModels(object):
                 ]
                 """
                 result_dict_list = models.predict()
+                for _result_dict in result_dict_list:
+                    for _key, _val in _result_dict.items():
+                        if isinstance(_val, np.ndarray):
+                            _result_dict[_key] = _val.tolist()
 
             except tf.errors.ResourceExhaustedError as e:
                 self.AI_LOGGER.error(e, exc_info=True)

@@ -83,13 +83,13 @@ class KCNN(TFKerasAlgAbstract):
             # input: image (None, width, height, channel)
             conv_stride = [1, 1]
             pooling_stride = [2, 2]
-            # if len(input_units) == 2:
-            #     self.model.add(
-            #         tf.keras.layers.Reshape(
-            #             input_units + (1,),  # tuple operation ex) (1,2) + (3,) = (1,2,3)
-            #             name="{}_{}_input_reshape".format(model_nm, alg_sn)
-            #         )
-            #     )
+            if len(input_units) == 2:
+                self.model.add(
+                    tf.keras.layers.Reshape(
+                        input_units + (1,),  # tuple operation ex) (1,2) + (3,) = (1,2,3)
+                        name="{}_{}_input_reshape".format(model_nm, alg_sn)
+                    )
+                )
 
         else:  # 3D
             conv_stride = [1, 1, 1]

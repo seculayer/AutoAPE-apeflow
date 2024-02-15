@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "apeflow"
-version = "1.0.0"
+version = "4.0-dev"
 description = "AutoML: Apeflow"
 authors = ["Jin Kim <jin.kim@seculayer.com>"]
 include = ["conf"]
@@ -12,7 +12,6 @@ gensim = "^3.7"
 scikit-learn = "^1.0"
 torch = "^1.11.0"
 numpy = "^1.21"
-scp = "^0.14.4"
 xgboost = "^1.6"
 pycmmn = { git = "https://ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-pycmmn.git", rev = "main" }
 lightgbm = "^3.3.3"
@@ -36,16 +35,35 @@ prospector = { extras = [
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.isort]
-profile = "black"
-
 [tool.pytest.ini_options]
 minversion = "7.0"
 addopts = "-ra -q --failed-first -n auto"
 testpaths = ["tests"]
 
+[tool.black]
+line-length = 120
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 120
+
+
 [tool.pylint.messages_control]
-disable = "C0330, C0326"
+disable = [
+    "missing-docstring",
+    "unused-argument",
+    "no-value-for-parameter",
+    "no-member",
+    "no-else-return",
+    "line-too-long",
+    "fixme",
+    "protected-access",
+    "too-few-public-methods",
+    "invalid-name"
+]
 
 [tool.pylint.format]
-max-line-length = "88"
+max-line-length = "120"

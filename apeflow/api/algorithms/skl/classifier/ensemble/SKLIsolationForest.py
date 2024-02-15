@@ -20,7 +20,7 @@ class SKLIsolationForest(SKLAlgAbstract):
         raise NotImplementedError
 
     # MODEL INFORMATION
-    ALG_CODE = "SKLRandomForest"
+    ALG_CODE = "SKLIsolationForest"
     ALG_TYPE = ["Classifier"]
     DATA_TYPE = ["Single"]
     VERSION = "1.0.0"

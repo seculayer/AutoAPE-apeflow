@@ -1,9 +1,8 @@
 tensorflow == 2.7.0
 gensim == 3.7.3
-scikit-learn == 1.0.1
+scikit-learn == 0.23.1
 torch==1.9.1
 numpy ~= 1.21.5
-scp == 0.14.2
 tensorflow-probability == 0.15.0
 xgboost == 1.6.2
 lightgbm == 3.3.3
