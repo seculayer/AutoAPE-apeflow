@@ -232,11 +232,20 @@ class AlgorithmAbstract(object):
     def eval_ta(self, dataset: dict):
         return self.eval_default_rst(dataset)
 
-    @staticmethod
-    def _arg_max(y: np.ndarray) -> np.ndarray:
+    def _arg_max(self, y: np.ndarray) -> np.ndarray:
         try:
-            _y = np.argmax(y, axis=1)
-        except:
+            # label encoding일 경우 shape가 (x, 1)이고 argmax 할 경우 전부 0으로 결과 반환
+            y_shape = np.shape(y)
+            if len(y_shape) == 2:
+                if y_shape[1] >= 2:
+                    _y = np.argmax(y, axis=1)
+                else:
+                    # 차원 축소
+                    _y = np.squeeze(y, axis=1)
+            else:
+                _y = y
+        except Exception as e:
+            self.LOGGER.error(e, exc_info=True)
             _y = y
 
         return _y

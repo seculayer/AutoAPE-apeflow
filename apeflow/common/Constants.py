@@ -113,6 +113,8 @@ class Constants(object, metaclass=Singleton):
 
     BATCH_SIZE = int(_CONFIG.get("batch_size", "1024"))
 
+    GPU_MEMORY_USAGE_WEIGHT = float(_CONFIG.get("gpu_memory_usage_weight", "0.7"))
+
 
 if __name__ == "__main__":
     print(Constants.__dict__)
