@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "apeflow"
-version = "4.0-dev"
+version = "1.0.0"
 description = "AutoML: Apeflow"
 authors = ["Jin Kim <jin.kim@seculayer.com>"]
 include = ["conf"]
