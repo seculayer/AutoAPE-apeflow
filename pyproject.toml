@@ -13,7 +13,7 @@ scikit-learn = "^1.0"
 torch = "^1.11.0"
 numpy = "^1.21"
 xgboost = "^1.6"
-pycmmn = { git = "https://ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-pycmmn.git", rev = "main" }
+pycmmn = { git = "https://ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-pycmmn.git", rev = "develop" }
 lightgbm = "^3.3.3"
 
 [tool.poetry.dev-dependencies]
