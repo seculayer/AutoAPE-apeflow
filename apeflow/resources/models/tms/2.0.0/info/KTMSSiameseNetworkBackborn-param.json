@@ -1,0 +1,37 @@
+{
+  "algorithm_code": "KTMSSiameseNetworkBackborn",
+  "algorithm_type": "Regressor",
+  "data_type": "Single",
+  "method_type": "Basic",
+  "input_units": "1024",
+  "output_units": "16",
+  "hidden_units": "256,128,64,32",
+  "global_step": "10",
+  "dropout_prob": "1.0",
+  "optimizer_fn": "Adam",
+  "model_nm": "TMS-SN-BACKBORN-2-0-0",
+  "alg_sn": "0",
+  "job_type": "learn",
+  "depth": "0",
+  "global_sn": "0",
+  "learning_rate": "0.1",
+
+  "params": {
+    "act_fn": "ReLU",
+    "filter_sizes": "3,3,3,3,3",
+    "pool_sizes": "3,3,3,3,3",
+    "num_filters": "16",
+    "pooling_fn": "Max1D",
+    "conv_fn": "Conv1D",
+    "initial_weight": "0.1"
+  },
+
+  "early_type": "2",
+  "minsteps": "20",
+  "early_key": "accuracy",
+  "early_value": "0.99",
+
+  "num_workers": "1",
+  "job_key": "test",
+  "learning": "Y"
+}

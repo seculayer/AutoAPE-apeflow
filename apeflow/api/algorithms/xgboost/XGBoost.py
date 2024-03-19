@@ -55,7 +55,7 @@ class XGBoost(AlgorithmAbstract):
             n_estimators=n_estimators,
             max_depth=max_depth,
             verbosity=0,
-            objective="multi:softproba",
+            objective="multi:softprob",
             # objective="binary:logistic",
             num_class=output_units
         )
@@ -92,7 +92,7 @@ class XGBoost(AlgorithmAbstract):
         # print(self.model.evals_result())
 
     def predict_proba(self, batch_x):
-        self.model.object = "multi:softproba"
+        self.model.object = "multi:softprob"
         return super(XGBoost, self).predict_proba(batch_x)
 
     def load_model(self):

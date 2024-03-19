@@ -43,8 +43,12 @@ class AlgorithmAbstract(object):
     @staticmethod
     def _check_parameter(param_dict):
         _param_dict = dict()
+        # KTMSSiameseNetworkBackborn-param.json의 input_units value str to tuple
+        if isinstance(param_dict["input_units"], str):
+            _param_dict["input_units"] = (int(param_dict["input_units"]), )
+        else:
+            _param_dict["input_units"] = tuple(map(int, param_dict["input_units"]))
 
-        _param_dict["input_units"] = tuple(map(int, param_dict["input_units"]))
         _param_dict["output_units"] = int(param_dict["output_units"])
         _param_dict["model_nm"] = str(param_dict["model_nm"])
         _param_dict["alg_sn"] = str(param_dict["alg_sn"])
