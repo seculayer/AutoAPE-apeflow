@@ -6,6 +6,7 @@
 import tensorflow as tf
 from typing import List, Union, Dict
 import numpy as np
+from sklearn.neighbors import BallTree
 
 from apeflow.api.algorithms.AlgorithmFactory import AlgorithmFactory
 from apeflow.common.Common import Common
@@ -151,6 +152,38 @@ class MLModels(object):
             temp = temp["next"]
 
         return result_dict_list
+
+    @staticmethod
+    def model_merge(input_model: Dict, target_model: Dict) -> Dict:
+        input_clusters: List = input_model["clusters"]
+        target_clusters: List = target_model["clusters"]
+
+        input_clusters_len = len(input_clusters)
+        target_clusters_len = len(target_clusters)
+
+        if input_clusters_len != target_clusters_len:
+            raise IndexError
+
+        for i in range(input_clusters_len):
+            input_cluster_dict: Dict = input_clusters[i]
+            target_cluster_dict: Dict = target_clusters[i]
+
+            # features process
+            input_cluster_dict.get("features", []).extend(target_cluster_dict.get("features", []))
+            # labels process
+            input_cluster_dict.get("labels", []).extend(target_cluster_dict.get("labels", []))
+            input_cluster_dict["labels"]: List = list(set(input_cluster_dict["labels"]))
+            input_cluster_dict["labels"].sort()
+            # stats process
+            for key, val in target_cluster_dict.get("stats", {}).items():
+                if key in input_cluster_dict.get("stats", {}).keys():
+                    input_cluster_dict["stats"][key] += val
+                else:
+                    input_cluster_dict["stats"][key] = val
+
+            input_cluster_dict["knn"] = BallTree(np.array(input_cluster_dict["features"]))
+
+        return input_model
 
     @staticmethod
     def _get_lib_types(param_dict_list):
