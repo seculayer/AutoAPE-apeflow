@@ -4,10 +4,13 @@
 # Powered by Seculayer © 2021 Service Model Team, R&D Center.
 
 import tensorflow as tf
+import tensorflow.keras.backend as K
 import os
 from apeflow.common.Constants import Constants
 from apeflow.common.Common import Common
 from pycmmn.exceptions.TFBackendError import TFBackendError
+from sklearn.metrics import classification_report, confusion_matrix
+import numpy as np
 
 
 class TFUtils(object):
@@ -72,7 +75,7 @@ class TFUtils(object):
                 #     gpu_weight = 0.7
                 # else:
                 #     gpu_weight = 0.35
-                gpu_weight = 1
+                gpu_weight = Constants.GPU_MEMORY_USAGE_WEIGHT
 
                 # 메모리 제한
                 os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "false"
@@ -125,6 +128,25 @@ class TFUtils(object):
         model.add(tf.keras.layers.Dense(units[-1], activation=final_act_fn, name=name+"_predict", ))
         return model
 
+    @staticmethod
+    def euclidean_distance(vector):
+        y_pred, y_true = vector
+        sum_square = K.sum(K.square(y_pred - y_true), axis=1, keepdims=True)
+        return tf.math.sqrt(K.maximum(sum_square, 0.0001))
+
+    @staticmethod
+    def print_confusion_matrix(pred, labels, confusion):
+        logger = Common.LOGGER.getLogger()
+        y_true = labels
+        if len(labels[0]) > 1:
+            y_true = np.argmax(labels, axis=1)
+        try:
+            logger.info("\n"+classification_report(y_true=y_true, y_pred=pred))
+            for row in confusion:
+                logger.info(f"{row}")
+        except:
+            print(y_true)
+            print(pred)
 
 if __name__ == '__main__':
     TFUtils.disable_tfv2()

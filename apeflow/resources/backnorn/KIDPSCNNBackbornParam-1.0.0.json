@@ -1,0 +1,38 @@
+{
+  "algorithm_code": "KIDPSCNNBackborn",
+  "algorithm_type": "Classifier",
+  "data_type": "Single",
+  "method_type": "Basic",
+  "input_units": "1024",
+  "output_units": "2",
+  "hidden_units": "64,32,16",
+  "global_step": "10",
+  "dropout_prob": "1.0",
+  "optimizer_fn": "Adam",
+  "model_nm": "IDPS-BACKBORN-1-0-0",
+  "alg_sn": "0",
+  "job_type": "learn",
+  "depth": "0",
+  "global_sn": "0",
+  "learning_rate": "0.0001",
+
+  "params": {
+    "num_layer": "5",
+    "act_fn": "Sigmoid",
+    "filter_sizes": "2,2,2",
+    "pool_sizes": "2,2,2",
+    "num_filters": "32",
+    "pooling_fn": "Average1D",
+    "conv_fn": "Conv1D",
+    "initial_weight": "1.0"
+  },
+
+  "early_type": "2",
+  "minsteps": "20",
+  "early_key": "accuracy",
+  "early_value": "0.99",
+
+  "num_workers": "1",
+  "job_key": "test",
+  "learning": "Y"
+}

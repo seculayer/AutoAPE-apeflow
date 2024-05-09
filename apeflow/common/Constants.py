@@ -49,6 +49,11 @@ class Constants(object, metaclass=Singleton):
     DIR_STORAGE = DIR_DATA_ROOT + _CONFIG.get("dir_storage", "/storage/ape")
     DIR_TEMP = DIR_PROCESSING + _CONFIG.get("dir_temp", "/temp")
     DIR_RESOURCES = FileUtils.get_realpath(file=__file__) + "/../resources"
+    DIR_LOAD_MODEL = DIR_DATA_ROOT + _CONFIG.get("dir_load_model", "/processing/ape/load_models")
+
+    # backborn model
+    DIR_KERAS_BACKBORN = DIR_RESOURCES + "/backborn"
+    DIR_RESOURCES_MODEL = DIR_RESOURCES + "/models"
 
     # LOG SETTING
     DIR_LOG = DIR_APP + _CONFIG.get("log_dir", "/logs")
@@ -110,8 +115,11 @@ class Constants(object, metaclass=Singleton):
     OUT_MODEL_PYTORCH = "PyTorch"
     OUT_MODEL_XGB = "xgboost"
     OUT_MODEL_LGBM = None
+    OUT_MODEL_IDPS_CLASSIFIER = "IDPS_CLASSIFIER"
 
     BATCH_SIZE = int(_CONFIG.get("batch_size", "1024"))
+
+    GPU_MEMORY_USAGE_WEIGHT = float(_CONFIG.get("gpu_memory_usage_weight", "0.7"))
 
 
 if __name__ == "__main__":

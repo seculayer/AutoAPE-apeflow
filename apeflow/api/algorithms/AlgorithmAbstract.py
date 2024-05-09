@@ -43,8 +43,12 @@ class AlgorithmAbstract(object):
     @staticmethod
     def _check_parameter(param_dict):
         _param_dict = dict()
+        # KTMSSiameseNetworkBackborn-param.json의 input_units value str to tuple
+        if isinstance(param_dict["input_units"], str):
+            _param_dict["input_units"] = (int(param_dict["input_units"]), )
+        else:
+            _param_dict["input_units"] = tuple(map(int, param_dict["input_units"]))
 
-        _param_dict["input_units"] = tuple(map(int, param_dict["input_units"]))
         _param_dict["output_units"] = int(param_dict["output_units"])
         _param_dict["model_nm"] = str(param_dict["model_nm"])
         _param_dict["alg_sn"] = str(param_dict["alg_sn"])
@@ -232,11 +236,20 @@ class AlgorithmAbstract(object):
     def eval_ta(self, dataset: dict):
         return self.eval_default_rst(dataset)
 
-    @staticmethod
-    def _arg_max(y: np.ndarray) -> np.ndarray:
+    def _arg_max(self, y: np.ndarray) -> np.ndarray:
         try:
-            _y = np.argmax(y, axis=1)
-        except:
+            # label encoding일 경우 shape가 (x, 1)이고 argmax 할 경우 전부 0으로 결과 반환
+            y_shape = np.shape(y)
+            if len(y_shape) == 2:
+                if y_shape[1] >= 2:
+                    _y = np.argmax(y, axis=1)
+                else:
+                    # 차원 축소
+                    _y = np.squeeze(y, axis=1)
+            else:
+                _y = y
+        except Exception as e:
+            self.LOGGER.error(e, exc_info=True)
             _y = y
 
         return _y

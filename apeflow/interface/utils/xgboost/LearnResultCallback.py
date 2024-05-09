@@ -23,7 +23,8 @@ class LearnResultCallback(xgboost.callback.TrainingCallback):
         self.LOGGER = Common.LOGGER.getLogger()
 
     def after_iteration(self, model, epoch, evals_log):
-        loss = evals_log.get("validation_0").get("logloss")
+        loss = evals_log.get("validation_0").get("mlogloss")
+        # loss = evals_log.get("validation_0").get("logloss")
 
         result = {
             "global_sn": self.global_sn,
